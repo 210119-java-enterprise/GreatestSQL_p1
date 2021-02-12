@@ -1,8 +1,8 @@
 package Meta;
-import Annotatons.Column;
-import Annotatons.Getter;
-import Annotatons.Setter;
-import Annotatons.Table;
+import Annotations.Column;
+import Annotations.Getter;
+import Annotations.Setter;
+import Annotations.Table;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
