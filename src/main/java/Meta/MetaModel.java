@@ -43,5 +43,4 @@ public final class MetaModel<T> {
         this.table_name = table_name;
         this.getter_columns = getter_columns;
     }
-
 }
