@@ -4,6 +4,10 @@ import java.lang.reflect.Method;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Collections;
+import Annotations.Column;
+import Annotations.Getter;
+import Annotations.Setter;
+import Annotations.Table;
 
 public abstract class ObjectMapper {
 
@@ -34,6 +38,7 @@ public abstract class ObjectMapper {
             e.printStackTrace();
         }
     }
+
     protected void setStatement(final PreparedStatement pstmt, final Method method, final String typeName, final int index, final Object obj) {
         try {
             switch (typeName) {
