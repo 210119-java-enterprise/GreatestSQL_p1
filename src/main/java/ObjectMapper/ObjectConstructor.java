@@ -1,9 +1,5 @@
 package ObjectMapper;
 
-import Annotations.Getter;
-import Meta.MetaConstructor;
-import Meta.MetaModel;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -12,6 +8,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
+import Annotations.Getter;
+import Meta.MetaConstructor;
+import Meta.MetaModel;
+import Connection.ConnectionFactory;
 
 public class ObjectConstructor extends ObjectMapper{
     public static final ObjectConstructor objCon = new ObjectConstructor();
@@ -29,8 +29,8 @@ public class ObjectConstructor extends ObjectMapper{
             if(getter.getDeclaredAnnotation(Getter.class).name().equals(column)) {
                 return getter;
             }
-            return null;
         }
+        return null;
     }
 
     public List<Object> getObjectFromDB(Class<?> clazz,final String column,final String condition) throws IllegalAccessException, InvocationTargetException, InstantiationException, NoSuchMethodException {
