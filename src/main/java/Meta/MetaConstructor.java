@@ -1,11 +1,10 @@
 package Meta;
-import Annotations.Column;
+
 import Annotations.Getter;
 import Annotations.Setter;
 import Annotations.Table;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -13,7 +12,7 @@ import java.util.HashMap;
 public final class MetaConstructor {
 
     private static final MetaConstructor constructor = new MetaConstructor();
-    private final HashMap<String,MetaModel<?>> models;
+    private final HashMap<String, MetaModel<?>> models;
 
 
     private MetaConstructor() {
@@ -24,14 +23,13 @@ public final class MetaConstructor {
     public static MetaConstructor getInstance() {
         return constructor;
     }
-    public HashMap<String,MetaModel<?>> getModels() {
+    public HashMap<String, MetaModel<?>> getModels() {
         return models;
     }
 
     private String getClassName(final Class<?> clazz) {
         return clazz.getSimpleName();
     }
-
 
     private Method[] getGetters(final Class<?> clazz) {
         return Arrays.stream(clazz.getDeclaredMethods())
@@ -56,25 +54,32 @@ public final class MetaConstructor {
         return clazz.getDeclaredAnnotation(Table.class).name();
     }
 
-    private String[] getColumnNames(final Field[] fields) {
-        return Arrays.stream(fields)
-                .filter(i -> i.getDeclaredAnnotation(Column.class) != null)
-                .map(i -> i.getAnnotation(Column.class).name())
-                .toArray(String[]::new);
+    private HashMap<Method,String[]> makeSetterMap(final Method[] methods) {
+        final HashMap<Method, String[]> map = new HashMap<Method, String[]>();
+        for (Method m : methods) {
+            final String column      = m.getDeclaredAnnotation(Setter.class).name();
+            final String return_type = m.getParameterTypes()[0].getSimpleName();
+            map.put(m, new String[]{column, return_type});
+        }
+        return map;
     }
 
-    private Field[] getFields(final Class<?> clazz) {
-        return Arrays.stream(clazz.getDeclaredFields())
-                .toArray(Field[]::new);
+    private HashMap<Method,String[]> makeGetterMap(final Method[] methods) {
+        final HashMap<Method,String[]> map = new HashMap<Method,String[]>();
+        for(Method m: methods) {
+            final String column      = m.getDeclaredAnnotation(Getter.class).name();
+            final String return_type = m.getReturnType().getSimpleName();
+            map.put(m,new String[]{column,return_type});
+        }
+        return map;
     }
 
     public void addModel(final Class<?> clazz) {
-        final String class_name             = getClassName(clazz);
-        final Method[] getters              = getGetters(clazz);
-        final Method[] setters              = getSetters(clazz);
-        final Constructor<?> constructor    = getConstructor(clazz);
-        final String table_name             = getTableName(clazz);
-        final String[] getter_column_names  = getColumnNames(getFields(clazz));
-        models.put(class_name,new MetaModel<>(clazz,getters,setters,getter_column_names,constructor,table_name));
+        final String class_name                 = getClassName(clazz);
+        final HashMap<Method,String[]> getters  = makeGetterMap(getGetters(clazz));
+        final HashMap<Method,String[]> setters  = makeSetterMap(getSetters(clazz));
+        final Constructor<?> constructor        = getConstructor(clazz);
+        final String table_name                 = getTableName(clazz);
+        models.put(class_name,new MetaModel<>(clazz,getters,setters,constructor,table_name));
     }
 }
