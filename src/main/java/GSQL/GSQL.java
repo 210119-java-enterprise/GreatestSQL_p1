@@ -1,6 +1,8 @@
 package GSQL;
 
 import java.sql.Connection;
+import java.util.List;
+
 import Meta.MetaConstructor;
 import Connection.ConnectionFactory;
 import ObjectMapper.ObjectMapper;
@@ -35,12 +37,12 @@ public class GSQL {
         return obj_saver.saveObject(obj,conn);
     }
 
-    public Object getObjectFromDB(final Class <?> clazz, final String columns, final String conditions) {
-        return obj_getter.getObjectFromDB(clazz,columns,conditions,"",conn);
+    public List<Object> getListObjectFromDB(final Class <?> clazz, final String columns, final String conditions) {
+        return obj_getter.getListObjectFromDB(clazz,columns,conditions,"",conn);
     }
 
-    public Object getObjectFromDB(final Class <?> clazz, final String columns, final String conditions,final String operators) {
-        return obj_getter.getObjectFromDB(clazz,columns,conditions,operators,conn);
+    public List<Object> getListObjectFromDB(final Class <?> clazz, final String columns, final String conditions,final String operators) {
+        return obj_getter.getListObjectFromDB(clazz,columns,conditions,operators,conn);
     }
 
 

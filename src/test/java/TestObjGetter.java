@@ -10,11 +10,11 @@ public class TestObjGetter {
         GSQL.getInstance().addClass(Person.class);
         final Connection conn = ConnectionFactory.getInstance().getConnection();
 
-        LinkedList<Object> p = (LinkedList<Object>) ObjectGetter.getInstance().getObjectFromDB(Person.class,"firstname","chris",null,conn);
+        LinkedList<Object> p = (LinkedList<Object>) ObjectGetter.getInstance().getListObjectFromDB(Person.class,"firstname","chris",null,conn);
         for(Object pers: p) {
             System.out.println(pers.toString());
         }
-        LinkedList<Object> g = (LinkedList<Object>) ObjectGetter.getInstance().getObjectFromDB(Person.class,"id,firstname,lastname","4,chris,nope","AND,AND",conn);
+        LinkedList<Object> g = (LinkedList<Object>) ObjectGetter.getInstance().getListObjectFromDB(Person.class,"id,firstname,lastname","4,chris,nope","AND,AND",conn);
         for(Object gers: g) {
             System.out.println(gers.toString());
         }

@@ -22,15 +22,6 @@ public class ObjectGetter extends ObjectMapper{
         return objCon;
     }
 
-    private Method getGetter(final MetaModel<?> model,final String column) {
-        for(Method getter : model.getGetters().keySet()) {
-            if(getter.getDeclaredAnnotation(Getter.class).name().equals(column)) {
-                return getter;
-            }
-        }
-        return null;
-    }
-
     private String parseColumns(final String columns, final String operators) {
         if(operators != null && !"".equals(operators.trim())) {
             final String[] columns_split = columns.split(",");
@@ -60,7 +51,7 @@ public class ObjectGetter extends ObjectMapper{
         }
     }
 
-    public List<Object> getObjectFromDB(Class<?> clazz,final String columns,final String conditions,final String operators,final Connection conn) {
+    public List<Object> getListObjectFromDB(Class<?> clazz,final String columns,final String conditions,final String operators,final Connection conn) {
         try {
             final MetaModel<?> model   = MetaConstructor.getInstance().getModels().get(clazz.getSimpleName());
             final String condition_str = parseColumns(columns,operators);
@@ -69,7 +60,7 @@ public class ObjectGetter extends ObjectMapper{
             final PreparedStatement pstmt = conn.prepareStatement(sql);
             setPreparedConditions(pstmt,conditions);
             final ResultSet rs = pstmt.executeQuery();
-            return getObjFromResult(rs,model.getSetters(),model.getConstructor());
+            return getListObjFromResult(rs,model.getSetters(),model.getConstructor());
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -99,7 +90,7 @@ public class ObjectGetter extends ObjectMapper{
         }
     }
 
-    private List<Object> getObjFromResult(final ResultSet rs, final HashMap<Method,String[]> setters, Constructor<?> constructor) {
+    private List<Object> getListObjFromResult(final ResultSet rs, final HashMap<Method,String[]> setters, Constructor<?> constructor) {
         try {
             List<Object> objs = new LinkedList<>();
             while(rs.next()) {
