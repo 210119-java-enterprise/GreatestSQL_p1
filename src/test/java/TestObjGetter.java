@@ -8,13 +8,12 @@ import java.util.LinkedList;
 public class TestObjGetter {
     public static void main(String[] args) {
         GSQL.getInstance().addClass(Person.class);
-        final Connection conn = ConnectionFactory.getInstance().getConnection();
 
-        LinkedList<Object> p = (LinkedList<Object>) ObjectGetter.getInstance().getListObjectFromDB(Person.class,"firstname","chris",null,conn);
+        LinkedList<Object> p = (LinkedList<Object>) GSQL.getInstance().getListObjectFromDB(Person.class,"firstname","chris",null);
         for(Object pers: p) {
             System.out.println(pers.toString());
         }
-        LinkedList<Object> g = (LinkedList<Object>) ObjectGetter.getInstance().getListObjectFromDB(Person.class,"id,firstname,lastname","4,chris,nope","AND,AND",conn);
+        LinkedList<Object> g = (LinkedList<Object>) GSQL.getInstance().getListObjectFromDB(Person.class,"id,firstname,lastname","4,chris,nope","AND,AND");
         for(Object gers: g) {
             System.out.println(gers.toString());
         }
