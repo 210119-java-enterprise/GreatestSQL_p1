@@ -13,14 +13,14 @@ import Meta.MetaConstructor;
 import Meta.MetaModel;
 import Connection.ConnectionFactory;
 
-public class ObjectConstructor extends ObjectMapper{
-    public static final ObjectConstructor objCon = new ObjectConstructor();
+public class ObjectGetter extends ObjectMapper{
+    public static final ObjectGetter objCon = new ObjectGetter();
 
-    private ObjectConstructor() {
+    private ObjectGetter() {
         super();
     }
 
-    public ObjectConstructor getInstance() {
+    public static ObjectGetter getInstance() {
         return objCon;
     }
 
@@ -33,13 +33,37 @@ public class ObjectConstructor extends ObjectMapper{
         return null;
     }
 
-    public List<Object> getObjectFromDB(Class<?> clazz,final String column,final String condition) throws IllegalAccessException, InvocationTargetException, InstantiationException, NoSuchMethodException {
-        try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
-            final MetaModel<?> model = MetaConstructor.getInstance().getModels().get(clazz.getSimpleName());
-            final String sql = "SELECT * FROM "  + model.getTable_name() + " WHERE " + column + " = ?";
+    private String parseColumns(final String columns, final String operators) {
+        if(!"".equals(operators.trim())) {
+            final String[] columns_split = columns.split(",");
+            final String[] operators_split = operators.split(",");
+            final StringBuilder str = new StringBuilder();
+            for (int i = 0; i < columns_split.length; i++) {
+                str.append(columns_split[i]).append(" = ? ").append(operators_split[i ]).append(" ");
+            }
+            return str.toString();
+        }
+        return columns + " = ? ";
+    }
+
+    private void setPreparedConditions(final PreparedStatement pstmt,final String conditions) {
+        final String[] conditions_split = conditions.split(",");
+        try {
+            for (int i = 0; i < conditions_split.length; i++) {
+                pstmt.setString(i + 1, conditions_split[i]);
+            }
+        }catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public List<Object> getObjectFromDB(Class<?> clazz,final String columns,final String conditions,final String operators,final Connection conn) {
+        try {
+            final MetaModel<?> model   = MetaConstructor.getInstance().getModels().get(clazz.getSimpleName());
+            final String condition_str = parseColumns(columns,operators);
+            final String sql = "SELECT * FROM "  + model.getTable_name() + " WHERE " + condition_str;
             final PreparedStatement pstmt = conn.prepareStatement(sql);
-            final Method getter           = getGetter(model,column);
-            pstmt.setString(1,condition);
+            setPreparedConditions(pstmt,conditions);
             final ResultSet rs = pstmt.executeQuery();
             return getObjFromResult(rs,model.getSetters(),model.getConstructor());
         } catch (SQLException e) {

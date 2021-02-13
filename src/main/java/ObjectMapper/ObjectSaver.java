@@ -16,12 +16,12 @@ public class ObjectSaver extends ObjectMapper{
         super();
     }
 
-    public static Object getValueFromDB(final MetaModel model, final String column) {
+    public Object getValueFromDB(final MetaModel model, final String column) {
 
         return null;
     }
 
-    public ObjectSaver getInstance() {
+    public static ObjectSaver getInstance() {
         return objSaver;
     }
 
@@ -55,8 +55,8 @@ public class ObjectSaver extends ObjectMapper{
         }
     }
 
-    public boolean saveObject(Object obj) {
-        try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
+    public boolean saveObject(Object obj,final Connection conn) {
+        try  {
             final MetaModel<?> model                = MetaConstructor.getInstance().getModels().get(obj.getClass().getSimpleName());
             final HashMap<Method,String[]> getters  = model.getGetters();
             final String args                       = getArgs(getters.keySet().size() - 1);

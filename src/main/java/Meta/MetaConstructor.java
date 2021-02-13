@@ -74,7 +74,7 @@ public final class MetaConstructor {
         return map;
     }
 
-    public void addModel(final Class<?> clazz) {
+    public void addModel(final Class<?> claz) {
         final String class_name                 = getClassName(clazz);
         final HashMap<Method,String[]> getters  = makeGetterMap(getGetters(clazz));
         final HashMap<Method,String[]> setters  = makeSetterMap(getSetters(clazz));
