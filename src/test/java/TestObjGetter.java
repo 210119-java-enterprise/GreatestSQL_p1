@@ -14,7 +14,7 @@ public class TestObjGetter {
         for(Object pers: p) {
             System.out.println(pers.toString());
         }
-        LinkedList<Object> g = (LinkedList<Object>) ObjectGetter.getInstance().getObjectFromDB(Person.class,"firstname,lastname","chris,nope","AND",conn);
+        LinkedList<Object> g = (LinkedList<Object>) ObjectGetter.getInstance().getObjectFromDB(Person.class,"id,firstname,lastname","4,chris,nope","AND,AND",conn);
         for(Object gers: g) {
             System.out.println(gers.toString());
         }

@@ -3,10 +3,8 @@ package ObjectMapper;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.lang.reflect.Parameter;
+import java.sql.*;
 import java.util.*;
 import Annotations.Getter;
 import Meta.MetaConstructor;
@@ -37,6 +35,8 @@ public class ObjectGetter extends ObjectMapper{
         if(operators != null && !"".equals(operators.trim())) {
             final String[] columns_split = columns.split(",");
             final String[] operators_split = operators.split(",");
+            System.out.println("operators split");
+            Arrays.stream(operators_split).forEach(System.out::println);
             final StringBuilder str = new StringBuilder();
             for (int i = 0; i < operators_split.length; i++) {
                 str.append(columns_split[i]).append(" = ? ").append(operators_split[i ]).append(" ");
@@ -50,8 +50,10 @@ public class ObjectGetter extends ObjectMapper{
     private void setPreparedConditions(final PreparedStatement pstmt,final String conditions) {
         final String[] conditions_split = conditions.split(",");
         try {
+            ParameterMetaData pd = pstmt.getParameterMetaData();
             for (int i = 0; i < conditions_split.length; i++) {
-                pstmt.setString(i + 1, conditions_split[i]);
+                System.out.println("condition is: "+ conditions_split[i]);
+                setPreparedStatementByTpe(pstmt,pd.getParameterTypeName(i+1),conditions_split[i],i+1);
             }
         }catch(Exception e) {
             e.printStackTrace();
@@ -62,7 +64,7 @@ public class ObjectGetter extends ObjectMapper{
         try {
             final MetaModel<?> model   = MetaConstructor.getInstance().getModels().get(clazz.getSimpleName());
             final String condition_str = parseColumns(columns,operators);
-            final String sql = "SELECT * FROM "  + model.getTable_name() + " WHERE " + condition_str + ";";
+            final String sql = "SELECT * FROM "  + model.getTable_name() + " WHERE " + condition_str;
             System.out.println(sql);
             final PreparedStatement pstmt = conn.prepareStatement(sql);
             setPreparedConditions(pstmt,conditions);
