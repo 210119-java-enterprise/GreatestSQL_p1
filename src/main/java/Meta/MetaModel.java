@@ -7,7 +7,7 @@ import java.util.Objects;
 
 public final class MetaModel<T> {
     private final Class<T> clazz;
-    private final HashMap<Method,String[]> getters;
+    private final HashMap<Method,String> getters;
     private final HashMap<Method,String[]> setters;
     private final Constructor<?> constructor;
     private final String table_name;
@@ -16,7 +16,7 @@ public final class MetaModel<T> {
         return clazz;
     }
 
-    public HashMap<Method, String[]> getGetters() {
+    public HashMap<Method, String> getGetters() {
         return getters;
     }
 
@@ -32,7 +32,7 @@ public final class MetaModel<T> {
         return table_name;
     }
 
-    public MetaModel(Class<T> clazz,HashMap<Method,String[]> getters,HashMap<Method,String[]> setters, Constructor<?> constructor, String table_name) {
+    public MetaModel(Class<T> clazz,HashMap<Method,String> getters,HashMap<Method,String[]> setters, Constructor<?> constructor, String table_name) {
         this.clazz = clazz;
         this.getters = getters;
         this.setters = setters;

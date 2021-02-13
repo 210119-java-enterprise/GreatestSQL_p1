@@ -6,6 +6,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.sql.*;
 import java.util.*;
+import java.util.regex.Matcher;
+
 import Annotations.Getter;
 import Meta.MetaConstructor;
 import Meta.MetaModel;
@@ -26,8 +28,6 @@ public class ObjectGetter extends ObjectMapper{
         if(operators != null && !"".equals(operators.trim())) {
             final String[] columns_split = columns.split(",");
             final String[] operators_split = operators.split(",");
-            System.out.println("operators split");
-            Arrays.stream(operators_split).forEach(System.out::println);
             final StringBuilder str = new StringBuilder();
             for (int i = 0; i < operators_split.length; i++) {
                 str.append(columns_split[i]).append(" = ? ").append(operators_split[i ]).append(" ");
@@ -42,9 +42,9 @@ public class ObjectGetter extends ObjectMapper{
         final String[] conditions_split = conditions.split(",");
         try {
             ParameterMetaData pd = pstmt.getParameterMetaData();
-            for (int i = 0; i < conditions_split.length; i++) {
-                System.out.println("condition is: "+ conditions_split[i]);
-                setPreparedStatementByTpe(pstmt,pd.getParameterTypeName(i+1),conditions_split[i],i+1);
+            int index = 1;
+            for (String cond: conditions_split) {
+                setPreparedStatementByType(pstmt,pd.getParameterTypeName(index),cond,index++);
             }
         }catch(Exception e) {
             e.printStackTrace();
@@ -56,7 +56,6 @@ public class ObjectGetter extends ObjectMapper{
             final MetaModel<?> model   = MetaConstructor.getInstance().getModels().get(clazz.getSimpleName());
             final String condition_str = parseColumns(columns,operators);
             final String sql = "SELECT * FROM "  + model.getTable_name() + " WHERE " + condition_str;
-            System.out.println(sql);
             final PreparedStatement pstmt = conn.prepareStatement(sql);
             setPreparedConditions(pstmt,conditions);
             final ResultSet rs = pstmt.executeQuery();
@@ -67,23 +66,28 @@ public class ObjectGetter extends ObjectMapper{
         return null;
     }
 
-    protected void setFieldFromSetter(final Object obj, final Map.Entry<Method,String[]> setter, final ResultSet rs) {
+    protected void setFieldFromSetter(final Object obj, final Map.Entry<Method,String[]> setter, final ResultSet rs, final String type) {
         try {
-            switch (setter.getValue()[1]) {
-                case "String":
-                    setter.getKey().invoke(obj, rs.getString(setter.getValue()[0]));
-                    break;
-                case "int":
-                    setter.getKey().invoke(obj, rs.getInt(setter.getValue()[0]));
-                    break;
-                case "double":
-                    setter.getKey().invoke(obj, rs.getDouble(setter.getValue()[0]));
-                    break;
-                case "float":
-                    setter.getKey().invoke(obj, rs.getFloat(setter.getValue()[0]));
-                    break;
-                default:
-                    break;
+            final Matcher match = pat.matcher(type);
+            if(match.find()) {
+                switch (match.group()) {
+                    case "text":
+                    case "String":
+                    case "varchar":
+                        setter.getKey().invoke(obj, rs.getString(setter.getValue()[0]));
+                        break;
+                    case "int":
+                        setter.getKey().invoke(obj, rs.getInt(setter.getValue()[0]));
+                        break;
+                    case "double":
+                        setter.getKey().invoke(obj, rs.getDouble(setter.getValue()[0]));
+                        break;
+                    case "float":
+                        setter.getKey().invoke(obj, rs.getFloat(setter.getValue()[0]));
+                        break;
+                    default:
+                        break;
+                }
             }
         }catch(Exception e) {
             e.printStackTrace();
@@ -92,10 +96,10 @@ public class ObjectGetter extends ObjectMapper{
 
     private List<Object> getListObjFromResult(final ResultSet rs, final HashMap<Method,String[]> setters, Constructor<?> constructor) {
         try {
-            List<Object> objs = new LinkedList<>();
+            final List<Object> objs = new LinkedList<>();
             while(rs.next()) {
-                Object obj = constructor.newInstance();
-                setters.entrySet().forEach(e -> setFieldFromSetter(obj,e,rs));
+                final Object obj = constructor.newInstance();
+                setters.entrySet().forEach(e -> setFieldFromSetter(obj,e,rs,e.getValue()[1]));
                 objs.add(obj);
             }
             return objs;

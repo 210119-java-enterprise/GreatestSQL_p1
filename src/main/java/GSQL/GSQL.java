@@ -37,10 +37,6 @@ public class GSQL {
         return obj_saver.saveObject(obj,conn);
     }
 
-    public boolean updateValueInDB(final String column,final Object obj) {
-
-    }
-
     public List<Object> getListObjectFromDB(final Class <?> clazz, final String columns, final String conditions) {
         return obj_getter.getListObjectFromDB(clazz,columns,conditions,"",conn);
     }

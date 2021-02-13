@@ -55,28 +55,24 @@ public final class MetaConstructor {
     }
 
     private HashMap<Method,String[]> makeSetterMap(final Method[] methods) {
-        final HashMap<Method, String[]> map = new HashMap<Method, String[]>();
-        for (Method m : methods) {
-            final String column      = m.getDeclaredAnnotation(Setter.class).name();
-            final String return_type = m.getParameterTypes()[0].getSimpleName();
-            map.put(m, new String[]{column, return_type});
+        final HashMap<Method, String[]> map = new HashMap<>();
+        for(Method m: methods) {
+            final String column = m.getDeclaredAnnotation(Setter.class).name();
+            final String type   = m.getParameterTypes()[0].getSimpleName();
+            map.put(m,new String[]{column,type});
         }
         return map;
     }
 
-    private HashMap<Method,String[]> makeGetterMap(final Method[] methods) {
-        final HashMap<Method,String[]> map = new HashMap<Method,String[]>();
-        for(Method m: methods) {
-            final String column      = m.getDeclaredAnnotation(Getter.class).name();
-            final String return_type = m.getReturnType().getSimpleName();
-            map.put(m,new String[]{column,return_type});
-        }
+    private HashMap<Method,String> makeGetterMap(final Method[] methods) {
+        final HashMap<Method,String> map = new HashMap<>();
+        Arrays.stream(methods).forEach(m -> map.put(m,m.getDeclaredAnnotation(Getter.class).name()));
         return map;
     }
 
     public void addModel(final Class<?> clazz) {
         final String class_name                 = getClassName(clazz);
-        final HashMap<Method,String[]> getters  = makeGetterMap(getGetters(clazz));
+        final HashMap<Method,String> getters    = makeGetterMap(getGetters(clazz));
         final HashMap<Method,String[]> setters  = makeSetterMap(getSetters(clazz));
         final Constructor<?> constructor        = getConstructor(clazz);
         final String table_name                 = getTableName(clazz);
