@@ -34,13 +34,14 @@ public class ObjectGetter extends ObjectMapper{
     }
 
     private String parseColumns(final String columns, final String operators) {
-        if(!"".equals(operators.trim())) {
+        if(operators != null && !"".equals(operators.trim())) {
             final String[] columns_split = columns.split(",");
             final String[] operators_split = operators.split(",");
             final StringBuilder str = new StringBuilder();
-            for (int i = 0; i < columns_split.length; i++) {
+            for (int i = 0; i < operators_split.length; i++) {
                 str.append(columns_split[i]).append(" = ? ").append(operators_split[i ]).append(" ");
             }
+            str.append(columns_split[columns_split.length - 1]).append(" = ?");
             return str.toString();
         }
         return columns + " = ? ";
@@ -61,7 +62,8 @@ public class ObjectGetter extends ObjectMapper{
         try {
             final MetaModel<?> model   = MetaConstructor.getInstance().getModels().get(clazz.getSimpleName());
             final String condition_str = parseColumns(columns,operators);
-            final String sql = "SELECT * FROM "  + model.getTable_name() + " WHERE " + condition_str;
+            final String sql = "SELECT * FROM "  + model.getTable_name() + " WHERE " + condition_str + ";";
+            System.out.println(sql);
             final PreparedStatement pstmt = conn.prepareStatement(sql);
             setPreparedConditions(pstmt,conditions);
             final ResultSet rs = pstmt.executeQuery();

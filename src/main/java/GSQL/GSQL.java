@@ -22,7 +22,7 @@ public class GSQL {
         obj_getter = ObjectGetter.getInstance();
     }
 
-    public GSQL getInstance() {
+    public static GSQL getInstance() {
         return gsql;
     }
 
