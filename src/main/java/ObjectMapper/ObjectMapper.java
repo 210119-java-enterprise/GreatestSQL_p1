@@ -26,6 +26,11 @@ public abstract class ObjectMapper {
         }
     }
 
+    /**
+     * If the object has a serial key then we need to get the name of that annotation name;
+     * @param obj the object to check over.
+     * @return Optional which will hold the name of the serial key if it exists.
+     */
     protected Optional<String> getSerialName(final Object obj) {
        return Arrays.stream(obj.getClass().getDeclaredFields())
                     .filter(f -> f.getDeclaredAnnotation(SerialKey.class) != null)
@@ -33,6 +38,12 @@ public abstract class ObjectMapper {
                     .findFirst();
     }
 
+    /**
+     * If the object has a serial key then get the map entry associated with its setter.
+     * @param name the name of the serial key
+     * @param setters the hashmap associated with the setters of the object.
+     * @return Optional which will hold the Map Entry if it exists.
+     */
     protected Optional<Map.Entry<Method,String[]>> getSerialKeyEntry(final Optional<String> name,final HashMap<Method,String[]> setters) {
         return setters.entrySet().stream()
                 .filter(e -> e.getValue()[0].equals(name.orElse("null")))

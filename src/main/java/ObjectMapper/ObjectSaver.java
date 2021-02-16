@@ -42,8 +42,11 @@ public class ObjectSaver extends ObjectMapper{
             final PreparedStatement pstmt                     = conn.prepareStatement(sql);
             final ParameterMetaData pd                        = pstmt.getParameterMetaData();
             int index                                         = 1;
-            for(Method getter : getters.keySet()) {
-                setStatement(pstmt, pd, getter, obj, index++);
+            for(Map.Entry<Method,String> getter : getters.entrySet()) {
+                if(!serial_name.isPresent() || !getter.getValue().equals(serial_name.get())) {
+                    System.out.println("name is: " + getter.getValue());
+                    setStatement(pstmt, pd, getter.getKey(), obj, index++);
+                }
             }
             pstmt.executeUpdate();
             return true;

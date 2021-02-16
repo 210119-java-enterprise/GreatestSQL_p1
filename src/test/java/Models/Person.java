@@ -31,7 +31,6 @@ public class Person {
     public Person(final int id, final String first_name, final String last_name) {
         this(first_name,last_name);
         this.id = id;
-        this.pk = id + 5;
     }
 
     @Getter(name = "sk")
