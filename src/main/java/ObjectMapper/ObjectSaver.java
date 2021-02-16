@@ -21,9 +21,7 @@ public class ObjectSaver extends ObjectMapper{
         return objSaver;
     }
 
-
     private String getColumns(final Collection<String> getters, final Optional<String> serial_name) {
-        System.out.println(serial_name.get());
         return String.join(",",getters.stream()
                     .filter(s -> (!serial_name.isPresent() || !s.equals(serial_name.get())))
                     .toArray(String[]::new));
@@ -38,7 +36,6 @@ public class ObjectSaver extends ObjectMapper{
             final String args                                 = getArgs( (serial_name.isPresent())? getters.keySet().size()- 2 : getters.keySet().size()- 1);
             final String columns                              = getColumns(getters.values(),serial_name);
             final String sql                                  = "INSERT INTO " + model.getTable_name() + " ( " + columns + " ) VALUES( " + args + " )";
-            System.out.println(sql);
             final PreparedStatement pstmt                     = conn.prepareStatement(sql);
             final ParameterMetaData pd                        = pstmt.getParameterMetaData();
             int index                                         = 1;

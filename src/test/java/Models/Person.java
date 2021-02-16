@@ -15,14 +15,14 @@ public class Person {
     @Column(name = "lastname")
     private String last_name;
 
-    @SerialKey(name = "sk")
-    private int pk;
+    @SerialKey(name = "pk")
+    private int sk;
 
     public Person() {
         super();
     }
 
-    public Person(String first_name,String last_name) {
+    public Person(final String first_name,final String last_name) {
         this.first_name = first_name;
         this.last_name = last_name;
 
@@ -33,42 +33,42 @@ public class Person {
         this.id = id;
     }
 
-    @Getter(name = "sk")
-    public int getPk() {
-        return pk;
+    @Getter(name = "pk")
+    public final int getsk() {
+        return sk;
     }
-    @Setter(name = "sk")
-    public void setPk(int pk) {
-        this.pk = pk;
+    @Setter(name = "pk")
+    public void setPk(final int sk) {
+        this.sk = sk;
     }
 
     @Getter(name = "id")
-    public int getId() {
+    public final int getId() {
         return id;
     }
 
     @Setter(name = "id")
-    public void setId(int id) {
+    public void setId(final int id) {
         this.id = id;
     }
 
     @Getter(name = "firstname")
-    public String getFirstName() {
+    public final String getFirstName() {
         return first_name;
     }
 
     @Setter(name = "firstname")
-    public void setFirstName( String first_name) {
+    public void setFirstName(final String first_name) {
         this.first_name = first_name;
     }
 
     @Getter(name = "lastname")
-    public String getLastName() {
+    public final String getLastName() {
         return last_name;
     }
 
     @Setter(name = "lastname")
-    public void setLastName( String last_name) {
+    public void setLastName( final String last_name) {
         this.last_name = last_name;
     }
 
@@ -81,13 +81,14 @@ public class Person {
     }
 
     @Override
-    public int hashCode() {
+    public final int hashCode() {
         return Objects.hash(id, first_name, last_name);
     }
 
     @Override
-    public String toString() {
+    public final String toString() {
         return "Model.Person{" +
+                "pk=" + sk +
                 "id=" + id +
                 ", first_name='" + first_name + '\'' +
                 ", last_name='" + last_name + '\'' +

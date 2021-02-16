@@ -24,9 +24,6 @@ public class ObjectUpdater extends ObjectMapper{
    private void setUpdateStatement(final Object obj,final PreparedStatement pstmt,final HashMap<Method,String> getters,final ParameterMetaData pd,final String[] update_array,int index) {
         for(String s : update_array) {
             final Map.Entry<Method,String> getter = getters.entrySet().stream().filter(e -> e.getValue().equals(s)).findFirst().get();
-            System.out.println("s is: " + s);
-            System.out.println("Method string is: " + getter.getValue());
-            System.out.println("index is " + index);
             setStatement(pstmt,pd,getter.getKey(),obj,index++);
         }
    }
@@ -39,7 +36,6 @@ public class ObjectUpdater extends ObjectMapper{
            final String[] update_array            = update_columns.split(",");
            final String new_columns               = String.join(" = ?, ", update_array) + " = ?";
            final String sql                       = "UPDATE " + model.getTable_name() + " SET " + new_columns + " where " + condition_str;
-           System.out.println(sql);
            final PreparedStatement pstmt          = conn.prepareStatement(sql);
            final ParameterMetaData pd             = pstmt.getParameterMetaData();
            setUpdateStatement(obj,pstmt,getters,pd,update_array,1);

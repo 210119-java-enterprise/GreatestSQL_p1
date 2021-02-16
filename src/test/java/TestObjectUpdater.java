@@ -11,10 +11,10 @@ public class TestObjectUpdater {
        // Person me = (Person) p.get(0);
         //me.setFirstName("spaceghost");
        // g.UpdateObjectInDB(me,"firstname","id",String.valueOf(me.getId()),"");
-         LinkedList<Object> p = (LinkedList<Object>) GSQL.getInstance().getListObjectFromDB(Person.class, "firstname", "chad");
+         LinkedList<Object> p = (LinkedList<Object>) GSQL.getInstance().getListObjectFromDB(Person.class, "firstname", "chris");
          Person chad = (Person) p.get(0);
-         chad.setFirstName("jim");
-        g.UpdateObjectInDB(chad,"firstname","id",String.valueOf(chad.getId()),"");
+         chad.setFirstName("zorak");
+         g.UpdateObjectInDB(chad,"firstname","id",String.valueOf(chad.getId()),"");
 
     }
 }
