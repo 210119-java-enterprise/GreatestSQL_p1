@@ -30,7 +30,7 @@ public class ObjectGetter extends ObjectMapper{
             final String[] operators_split = operators.split(",");
             final StringBuilder str = new StringBuilder();
             for (int i = 0; i < operators_split.length; i++) {
-                str.append(columns_split[i]).append(" = ? ").append(operators_split[i ]).append(" ");
+                str.append(columns_split[i]).append(" = ? ").append(operators_split[i]).append(" ");
             }
             str.append(columns_split[columns_split.length - 1]).append(" = ?");
             return str.toString();
@@ -51,7 +51,7 @@ public class ObjectGetter extends ObjectMapper{
         }
     }
 
-    public List<Object> getListObjectFromDB(Class<?> clazz,final String columns,final String conditions,final String operators,final Connection conn) {
+    public List<Object> getListObjectFromDB(final Class<?> clazz,final String columns,final String conditions,final String operators,final Connection conn) {
         try {
             final MetaModel<?> model   = MetaConstructor.getInstance().getModels().get(clazz.getSimpleName());
             final String condition_str = parseColumns(columns,operators);

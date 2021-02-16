@@ -5,23 +5,25 @@ import java.util.List;
 
 import Meta.MetaConstructor;
 import Connection.ConnectionFactory;
-import ObjectMapper.ObjectMapper;
+import ObjectMapper.ObjectRemover;
 import ObjectMapper.ObjectSaver;
 import ObjectMapper.ObjectGetter;
 
 public class GSQL {
-    private Connection conn;
-    private MetaConstructor construct;
-    private ObjectSaver obj_saver;
-    private ObjectGetter obj_getter;
+    private final Connection conn;
+    private final MetaConstructor construct;
+    private final ObjectSaver obj_saver;
+    private final ObjectGetter obj_getter;
+    private final ObjectRemover obj_remover;
     final private static GSQL gsql = new GSQL();
 
     private GSQL() {
         super();
-        conn       = ConnectionFactory.getInstance().getConnection();
-        construct  = MetaConstructor.getInstance();
-        obj_saver  = ObjectSaver.getInstance();
-        obj_getter = ObjectGetter.getInstance();
+        conn        = ConnectionFactory.getInstance().getConnection();
+        construct   = MetaConstructor.getInstance();
+        obj_saver   = ObjectSaver.getInstance();
+        obj_getter  = ObjectGetter.getInstance();
+        obj_remover = ObjectRemover.getInstance();
     }
 
     public static GSQL getInstance() {
@@ -32,6 +34,11 @@ public class GSQL {
         construct.addModel(clazz);
         return true;
     }
+
+    public boolean removeObjectFromDB(final Object obj) {
+        return obj_remover.removeObjectFromDB(obj,conn);
+    }
+
 
     public boolean addObjectToDB(final Object obj) {
         return obj_saver.saveObject(obj,conn);

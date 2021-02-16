@@ -6,6 +6,7 @@ import java.util.Objects;
 @Table(name = "Users")
 public class Person {
     @Column(name = "id")
+    @PrimaryKey(name = "id")
     private int id;
     @Column(name = "firstname")
     private String first_name;
