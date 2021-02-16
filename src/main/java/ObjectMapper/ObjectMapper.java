@@ -1,11 +1,13 @@
 package ObjectMapper;
 
+import Annotations.SerialKey;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.sql.ParameterMetaData;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.util.Collections;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -22,6 +24,19 @@ public abstract class ObjectMapper {
         }catch(Exception e){
             e.printStackTrace();
         }
+    }
+
+    protected Optional<String> getSerialName(final Object obj) {
+       return Arrays.stream(obj.getClass().getDeclaredFields())
+                    .filter(f -> f.getDeclaredAnnotation(SerialKey.class) != null)
+                    .map(f -> f.getDeclaredAnnotation(SerialKey.class).name())
+                    .findFirst();
+    }
+
+    protected Optional<Map.Entry<Method,String[]>> getSerialKeyEntry(final Optional<String> name,final HashMap<Method,String[]> setters) {
+        return setters.entrySet().stream()
+                .filter(e -> e.getValue()[0].equals(name.orElse("null")))
+                .findFirst();
     }
 
 

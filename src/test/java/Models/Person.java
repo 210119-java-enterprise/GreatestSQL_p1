@@ -8,11 +8,15 @@ public class Person {
     @Column(name = "id")
     @PrimaryKey(name = "id")
     private int id;
+
     @Column(name = "firstname")
     private String first_name;
+
     @Column(name = "lastname")
     private String last_name;
 
+    @SerialKey(name = "sk")
+    private int pk;
 
     public Person() {
         super();
@@ -27,6 +31,16 @@ public class Person {
     public Person(final int id, final String first_name, final String last_name) {
         this(first_name,last_name);
         this.id = id;
+        this.pk = id + 5;
+    }
+
+    @Getter(name = "sk")
+    public int getPk() {
+        return pk;
+    }
+    @Setter(name = "sk")
+    public void setPk(int pk) {
+        this.pk = pk;
     }
 
     @Getter(name = "id")

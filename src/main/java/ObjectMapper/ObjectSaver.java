@@ -22,16 +22,26 @@ public class ObjectSaver extends ObjectMapper{
     }
 
 
+    private String getColumns(final Collection<String> getters, final Optional<String> serial_name) {
+        System.out.println(serial_name.get());
+        return String.join(",",getters.stream()
+                    .filter(s -> (!serial_name.isPresent() || !s.equals(serial_name.get())))
+                    .toArray(String[]::new));
+    }
+
     public boolean saveObject(final Object obj,final Connection conn) {
         try  {
-            final MetaModel<?> model                = MetaConstructor.getInstance().getModels().get(obj.getClass().getSimpleName());
-            final HashMap<Method,String> getters    = model.getGetters();
-            final String args                       = getArgs(getters.keySet().size() - 1);
-            final String columns                    = String.join(",",getters.values());
-            final String sql                        = "INSERT INTO " + model.getTable_name() + " ( " + columns + " ) VALUES( " + args + " )";
-            final PreparedStatement pstmt           = conn.prepareStatement(sql);
-            final ParameterMetaData pd              = pstmt.getParameterMetaData();
-            int index                               = 1;
+            final MetaModel<?> model                          = MetaConstructor.getInstance().getModels().get(obj.getClass().getSimpleName());
+            final HashMap<Method,String> getters              = model.getGetters();
+            final Optional<String> serial_name                = getSerialName(obj);
+            final Optional<Map.Entry<Method,String[]>> setter = getSerialKeyEntry(serial_name,model.getSetters());
+            final String args                                 = getArgs( (serial_name.isPresent())? getters.keySet().size()- 2 : getters.keySet().size()- 1);
+            final String columns                              = getColumns(getters.values(),serial_name);
+            final String sql                                  = "INSERT INTO " + model.getTable_name() + " ( " + columns + " ) VALUES( " + args + " )";
+            System.out.println(sql);
+            final PreparedStatement pstmt                     = conn.prepareStatement(sql);
+            final ParameterMetaData pd                        = pstmt.getParameterMetaData();
+            int index                                         = 1;
             for(Method getter : getters.keySet()) {
                 setStatement(pstmt, pd, getter, obj, index++);
             }
