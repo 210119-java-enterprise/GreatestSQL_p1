@@ -8,6 +8,7 @@ import Connection.ConnectionFactory;
 import ObjectMapper.ObjectRemover;
 import ObjectMapper.ObjectSaver;
 import ObjectMapper.ObjectGetter;
+import ObjectMapper.ObjectUpdater;
 
 public class GSQL {
     private final Connection conn;
@@ -15,6 +16,7 @@ public class GSQL {
     private final ObjectSaver obj_saver;
     private final ObjectGetter obj_getter;
     private final ObjectRemover obj_remover;
+    private final ObjectUpdater obj_updater;
     final private static GSQL gsql = new GSQL();
 
     private GSQL() {
@@ -24,6 +26,7 @@ public class GSQL {
         obj_saver   = ObjectSaver.getInstance();
         obj_getter  = ObjectGetter.getInstance();
         obj_remover = ObjectRemover.getInstance();
+        obj_updater = ObjectUpdater.getInstance();
     }
 
     public static GSQL getInstance() {
@@ -33,6 +36,10 @@ public class GSQL {
     public boolean addClass(final Class<?> clazz) {
         construct.addModel(clazz);
         return true;
+    }
+
+    public boolean UpdateObjectInDB(final Object obj,final String update_columns, final String condition_columns,final String conditions,final String operators) {
+        return obj_updater.updateObject(obj,update_columns,condition_columns,conditions,operators,conn);
     }
 
     public boolean removeObjectFromDB(final Object obj) {

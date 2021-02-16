@@ -22,7 +22,7 @@ public class ObjectSaver extends ObjectMapper{
     }
 
 
-    public boolean saveObject(Object obj,final Connection conn) {
+    public boolean saveObject(final Object obj,final Connection conn) {
         try  {
             final MetaModel<?> model                = MetaConstructor.getInstance().getModels().get(obj.getClass().getSimpleName());
             final HashMap<Method,String> getters    = model.getGetters();

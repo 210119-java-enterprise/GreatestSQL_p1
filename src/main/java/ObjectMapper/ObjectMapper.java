@@ -24,6 +24,7 @@ public abstract class ObjectMapper {
         }
     }
 
+
     protected void setPreparedStatementByType(final PreparedStatement pstmt, final String type,final String input,final int index) {
         try {
             Matcher match = pat.matcher(type);
@@ -50,6 +51,20 @@ public abstract class ObjectMapper {
       }catch(Exception e) {
             e.printStackTrace();
         }
+    }
+
+    protected String parseColumns(final String columns, final String operators) {
+        if(operators != null && !"".equals(operators.trim())) {
+            final String[] columns_split = columns.split(",");
+            final String[] operators_split = operators.split(",");
+            final StringBuilder str = new StringBuilder();
+            for (int i = 0; i < operators_split.length; i++) {
+                str.append(columns_split[i]).append(" = ? ").append(operators_split[i]).append(" ");
+            }
+            str.append(columns_split[columns_split.length - 1]).append(" = ?");
+            return str.toString();
+        }
+        return columns + " = ? ";
     }
 
 }
