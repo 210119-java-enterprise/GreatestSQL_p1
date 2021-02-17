@@ -1,7 +1,7 @@
-package ObjectMapper;
+package com.revature.ObjectMapper;
 
-import Annotations.SerialKey;
-import Logger.GSQLogger;
+import com.revature.Annotations.SerialKey;
+import com.revature.GSQLogger.GSQLogger;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

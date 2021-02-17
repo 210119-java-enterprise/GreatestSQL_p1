@@ -1,8 +1,8 @@
-package ObjectMapper;
+package com.revature.ObjectMapper;
 
-import Logger.GSQLogger;
-import Meta.MetaConstructor;
-import Meta.MetaModel;
+import com.revature.GSQLogger.GSQLogger;
+import com.revature.META.MetaConstructor;
+import com.revature.META.MetaModel;
 
 import java.lang.reflect.Method;
 import java.sql.Connection;
@@ -44,7 +44,7 @@ public class ObjectUpdater extends ObjectMapper{
            setUpdateStatement(obj,pstmt,getters,pd,condition_columns.split(","),update_array.length + 1);
            pstmt.executeUpdate();
            return true;
-       } catch (SQLException sqle) {
+       } catch (Exception sqle) {
            GSQLogger.getInstance().writeError(sqle);
        }
        return false;

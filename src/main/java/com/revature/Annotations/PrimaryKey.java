@@ -1,4 +1,4 @@
-package Annotations;
+package com.revature.Annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -7,6 +7,6 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface SerialKey {
+public @interface PrimaryKey {
     String name();
 }

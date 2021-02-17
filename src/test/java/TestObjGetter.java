@@ -1,8 +1,6 @@
-import GSQL.GSQL;
-import ObjectMapper.ObjectGetter;
+import com.revature.GSQL.GSQL;
 import Models.Person;
-import Connection.ConnectionFactory;
-import java.sql.Connection;
+
 import java.util.LinkedList;
 
 public class TestObjGetter {

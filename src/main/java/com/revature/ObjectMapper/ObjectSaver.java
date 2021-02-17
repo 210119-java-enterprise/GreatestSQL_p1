@@ -1,8 +1,8 @@
-package ObjectMapper;
+package com.revature.ObjectMapper;
 
-import Logger.GSQLogger;
-import Meta.MetaConstructor;
-import Meta.MetaModel;
+import com.revature.GSQLogger.GSQLogger;
+import com.revature.META.MetaConstructor;
+import com.revature.META.MetaModel;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

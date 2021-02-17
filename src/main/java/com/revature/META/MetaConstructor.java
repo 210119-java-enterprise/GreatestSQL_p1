@@ -1,8 +1,8 @@
-package Meta;
+package com.revature.META;
 
-import Annotations.Getter;
-import Annotations.Setter;
-import Annotations.Table;
+import com.revature.Annotations.Getter;
+import com.revature.Annotations.Setter;
+import com.revature.Annotations.Table;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;

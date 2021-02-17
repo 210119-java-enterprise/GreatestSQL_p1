@@ -1,12 +1,11 @@
-package Connection;
+package com.revature.Connection;
 
-import Logger.GSQLogger;
+import com.revature.GSQLogger.GSQLogger;
 import org.apache.commons.dbcp2.BasicDataSource;
 
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 

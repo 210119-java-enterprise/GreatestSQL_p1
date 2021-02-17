@@ -1,8 +1,8 @@
-package GSQL;
+package com.revature.GSQL;
 
-import Connection.ConnectionFactory;
-import Meta.MetaConstructor;
-import ObjectMapper.*;
+import com.revature.Connection.ConnectionFactory;
+import com.revature.META.MetaConstructor;
+import com.revature.ObjectMapper.*;
 
 import java.sql.Connection;
 import java.util.List;

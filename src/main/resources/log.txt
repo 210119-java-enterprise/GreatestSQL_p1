@@ -1,0 +1,10 @@
+
+======================================
+21-02-17: 14:52:36
+	this is a message
+======================================
+21-02-17: 14:52:36
+	java.lang.NullPointerException
+	at com.revature.ObjectMapper.ObjectUpdater.updateObject(ObjectUpdater.java:36)
+	at com.revature.GSQL.GSQL.UpdateObjectInDB(GSQL.java:41)
+	at TestLogger.main(TestLogger.java:10)

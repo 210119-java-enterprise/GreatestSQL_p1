@@ -1,19 +1,15 @@
-import Annotations.Column;
-import Annotations.Getter;
-import Annotations.PrimaryKey;
-import GSQL.GSQL;
-import Logger.GSQLogger;
-import Meta.MetaConstructor;
-import Meta.MetaModel;
+import com.revature.Annotations.PrimaryKey;
+import com.revature.GSQL.GSQL;
+import com.revature.GSQLogger.GSQLogger;
+import com.revature.META.MetaConstructor;
+import com.revature.META.MetaModel;
 import Models.Person;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 public class TestObjRemover {
     public static void main(String[] args) throws InvocationTargetException, IllegalAccessException {

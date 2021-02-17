@@ -1,6 +1,6 @@
-package ObjectMapper;
+package com.revature.ObjectMapper;
 
-import Logger.GSQLogger;
+import com.revature.GSQLogger.GSQLogger;
 
 import java.sql.Connection;
 import java.sql.SQLException;

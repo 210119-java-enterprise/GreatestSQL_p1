@@ -1,7 +1,7 @@
-package ObjectMapper;
+package com.revature.ObjectMapper;
 
-import Meta.MetaConstructor;
-import Meta.MetaModel;
+import com.revature.META.MetaConstructor;
+import com.revature.META.MetaModel;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
