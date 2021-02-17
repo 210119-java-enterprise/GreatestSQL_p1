@@ -6,7 +6,8 @@ import java.util.LinkedList;
 public class TestTransactions {
     public static void main(String[] args) {
         GSQL.getInstance().addClass(Person.class);
-        GSQL.getInstance().beginCommit();
+       GSQL.getInstance().setTransaction();
+       // GSQL.getInstance().beginCommit();
         GSQL.getInstance().setSavepoint("sp1");
         final Person me = new Person(6,"chris","nichols");
         GSQL.getInstance().addObjectToDB(me);

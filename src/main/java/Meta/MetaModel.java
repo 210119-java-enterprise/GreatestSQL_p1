@@ -5,7 +5,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Objects;
 
-public final class MetaModel<T> {
+public class MetaModel<T> {
     private final Class<T> clazz;
     private final HashMap<Method,String> getters;
     private final HashMap<Method,String[]> setters;

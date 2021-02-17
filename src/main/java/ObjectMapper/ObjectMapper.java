@@ -14,7 +14,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public abstract class ObjectMapper {
-    protected Pattern pat = Pattern.compile("[^\\d]+");
+    protected final Pattern pat = Pattern.compile("[^\\d]+");
 
     protected String getArgs(final int length) {
         return String.join(",", Collections.nCopies(length,"?")) + ",? ";

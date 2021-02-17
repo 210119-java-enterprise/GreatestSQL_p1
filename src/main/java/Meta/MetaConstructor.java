@@ -9,7 +9,7 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashMap;
 
-public final class MetaConstructor {
+public class MetaConstructor {
 
     private static final MetaConstructor constructor = new MetaConstructor();
     private final HashMap<String, MetaModel<?>> models;

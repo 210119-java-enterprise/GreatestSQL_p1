@@ -1,6 +1,7 @@
 package Connection;
 
 import Logger.GSQLogger;
+import org.apache.commons.dbcp2.BasicDataSource;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -16,7 +17,9 @@ import java.util.Properties;
  */
 public class ConnectionFactory {
     private static final ConnectionFactory connection_factory = new ConnectionFactory();
-    private final Properties props = new Properties();
+    private BasicDataSource ds;
+
+
     static {
         try {
             Class.forName("org.postgresql.Driver");
@@ -30,8 +33,18 @@ public class ConnectionFactory {
      */
     private ConnectionFactory() {
         try {
+            Properties props = new Properties();
             props.load(new FileReader("src/main/resources/application.properties"));
+            ds = new BasicDataSource();
+            ds.setUrl(props.getProperty("url"));
+            ds.setUsername(props.getProperty("admin-usr"));
+            ds.setPassword(props.getProperty("admin-pw"));
+            ds.setMinIdle(5);
+            ds.setDefaultAutoCommit(false);
+            ds.setMaxIdle(10);
+            ds.setMaxOpenPreparedStatements(100);
         }catch(IOException ioe) {
+            System.out.println("sorry, no application properties file found.");
             GSQLogger.getInstance().writeError(ioe);
         }
     }
@@ -49,16 +62,11 @@ public class ConnectionFactory {
      * @return Connection object.
      */
     public Connection getConnection () {
-        Connection conn = null;
         try {
-            conn = DriverManager.getConnection(
-                    props.getProperty("url"),
-                    props.getProperty("admin-usr"),
-                    props.getProperty("admin-pw")
-            );
+            return ds.getConnection();
         }catch (SQLException sqle) {
             GSQLogger.getInstance().writeError(sqle);
         }
-        return conn;
+        return null;
     }
 }

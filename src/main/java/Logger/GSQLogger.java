@@ -8,7 +8,7 @@ import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public final class GSQLogger {
+public class GSQLogger {
     private static final GSQLogger logger = new GSQLogger();
     private PrintWriter log;
     private final SimpleDateFormat formatter;
@@ -30,7 +30,8 @@ public final class GSQLogger {
     private void writeToLogger(final String message) {
         System.out.println("Sorry, there was a problem with your request. Please show log file to a developer.");
         log.write("\n======================================\n");
-        log.write(formatter.format(message));
+        log.write(message);
+        log.flush();
     }
 
     public void writeError(final String error) {

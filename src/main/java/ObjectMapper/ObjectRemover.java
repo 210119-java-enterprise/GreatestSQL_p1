@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ObjectRemover extends ObjectMapper{
-    private static ObjectRemover obj_remove = new ObjectRemover();
+    private static final ObjectRemover obj_remove = new ObjectRemover();
 
 
     private ObjectRemover() {

@@ -1,21 +1,21 @@
 package GSQL;
 
+import Connection.ConnectionFactory;
+import Meta.MetaConstructor;
+import ObjectMapper.*;
+
 import java.sql.Connection;
 import java.util.List;
 
-import Meta.MetaConstructor;
-import Connection.ConnectionFactory;
-import ObjectMapper.*;
-
 public class GSQL {
-    private final Connection conn;
+    final private static GSQL gsql = new GSQL();
     private final MetaConstructor construct;
     private final ObjectSaver obj_saver;
     private final ObjectGetter obj_getter;
     private final ObjectRemover obj_remover;
     private final ObjectUpdater obj_updater;
     private final Transactions transaction;
-    final private static GSQL gsql = new GSQL();
+    private final Connection conn;
 
     private GSQL() {
         super();
@@ -80,5 +80,9 @@ public class GSQL {
 
     public void enableAutoCommit() {
         transaction.enableAutoCommit(conn);
+    }
+
+    public void setTransaction() {
+        transaction.setTransaction(conn);
     }
 }

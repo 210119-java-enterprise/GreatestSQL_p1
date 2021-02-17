@@ -1,10 +1,8 @@
 package ObjectMapper;
 
-import Connection.ConnectionFactory;
 import Logger.GSQLogger;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Savepoint;
 import java.util.HashMap;
@@ -16,7 +14,7 @@ public class Transactions {
 
     private Transactions(){
         super();
-        savepoints = new HashMap<String,Savepoint>();
+        savepoints = new HashMap<>();
     }
 
     public static Transactions getTransaction() {
@@ -33,7 +31,6 @@ public class Transactions {
 
     public void Commit(final Connection conn) {
         try {
-            conn.setAutoCommit(false);
             conn.commit();
         }catch (SQLException sqle) {
             GSQLogger.getInstance().writeError(sqle);
@@ -78,6 +75,14 @@ public class Transactions {
                 GSQLogger.getInstance().writeError("tried to access a non-existent savepoint");
             }
         } catch (SQLException sqle) {
+            GSQLogger.getInstance().writeError(sqle);
+        }
+    }
+
+    public void setTransaction(final Connection conn) {
+        try {
+            conn.setTransactionIsolation(conn.TRANSACTION_READ_COMMITTED);
+        }catch(SQLException sqle) {
             GSQLogger.getInstance().writeError(sqle);
         }
     }

@@ -1,17 +1,16 @@
 package ObjectMapper;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
-import java.sql.*;
-import java.util.*;
-import java.util.regex.Matcher;
-
-import Annotations.Getter;
 import Meta.MetaConstructor;
 import Meta.MetaModel;
-import Connection.ConnectionFactory;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+import java.sql.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
 
 public class ObjectGetter extends ObjectMapper{
     public static final ObjectGetter objCon = new ObjectGetter();

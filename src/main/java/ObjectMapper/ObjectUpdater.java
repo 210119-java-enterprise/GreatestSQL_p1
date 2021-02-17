@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ObjectUpdater extends ObjectMapper{
-    private static ObjectUpdater obj_updater = new ObjectUpdater();
+    private static final ObjectUpdater obj_updater = new ObjectUpdater();
 
     private ObjectUpdater() {
         super();
