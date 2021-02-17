@@ -5,10 +5,7 @@ import java.util.List;
 
 import Meta.MetaConstructor;
 import Connection.ConnectionFactory;
-import ObjectMapper.ObjectRemover;
-import ObjectMapper.ObjectSaver;
-import ObjectMapper.ObjectGetter;
-import ObjectMapper.ObjectUpdater;
+import ObjectMapper.*;
 
 public class GSQL {
     private final Connection conn;
@@ -17,6 +14,7 @@ public class GSQL {
     private final ObjectGetter obj_getter;
     private final ObjectRemover obj_remover;
     private final ObjectUpdater obj_updater;
+    private final Transactions transaction;
     final private static GSQL gsql = new GSQL();
 
     private GSQL() {
@@ -27,6 +25,7 @@ public class GSQL {
         obj_getter  = ObjectGetter.getInstance();
         obj_remover = ObjectRemover.getInstance();
         obj_updater = ObjectUpdater.getInstance();
+        transaction = Transactions.getTransaction();
     }
 
     public static GSQL getInstance() {
@@ -59,5 +58,23 @@ public class GSQL {
         return obj_getter.getListObjectFromDB(clazz,columns,conditions,operators,conn);
     }
 
+    public void Commit() {
+        transaction.Commit();
+    }
 
+    public void Rollback() {
+        transaction.Rollback();
+    }
+
+    public void Rollback(final String name) {
+        transaction.Rollback(name);
+    }
+
+    public void Savepoint(final String name) {
+        transaction.Savepoint(name);
+    }
+
+    public void ReleaseSavepoint(final String name) {
+        transaction.ReleaseSavepoint(name);
+    }
 }

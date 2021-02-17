@@ -43,7 +43,6 @@ public class ObjectRemover extends ObjectMapper{
             final String primary_key                = getPK(obj.getClass());
             final Method getter                     = getGetter(primary_key,model.getGetters());
             final String sql                        = "DELETE from " + model.getTable_name() + " WHERE "+ primary_key + " = ? ";
-            System.out.println(sql);
             final PreparedStatement pstmt           = conn.prepareStatement(sql);
             final ParameterMetaData pd              = pstmt.getParameterMetaData();
             setStatement(pstmt, pd, getter, obj, 1);
