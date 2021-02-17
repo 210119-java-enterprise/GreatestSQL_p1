@@ -58,23 +58,27 @@ public class GSQL {
         return obj_getter.getListObjectFromDB(clazz,columns,conditions,operators,conn);
     }
 
-    public void Commit() {
-        transaction.Commit();
+    public void beginCommit() {
+        transaction.Commit(conn);
     }
 
     public void Rollback() {
-        transaction.Rollback();
+        transaction.Rollback(conn);
     }
 
     public void Rollback(final String name) {
-        transaction.Rollback(name);
+        transaction.Rollback(name,conn);
     }
 
-    public void Savepoint(final String name) {
-        transaction.Savepoint(name);
+    public void setSavepoint(final String name) {
+        transaction.Savepoint(name,conn);
     }
 
     public void ReleaseSavepoint(final String name) {
-        transaction.ReleaseSavepoint(name);
+        transaction.ReleaseSavepoint(name,conn);
+    }
+
+    public void enableAutoCommit() {
+        transaction.enableAutoCommit(conn);
     }
 }

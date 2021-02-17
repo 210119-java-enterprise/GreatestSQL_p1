@@ -32,7 +32,6 @@ public class ObjectSaver extends ObjectMapper{
         try {
             final ResultSet rs = pstmt.getGeneratedKeys();
             while (rs.next() && setter.isPresent()) {
-                System.out.println("setting serial id");
                 setter.get().getKey().invoke(obj,rs.getInt(setter.get().getValue()[0]));
             }
         } catch(SQLException | IllegalAccessException | InvocationTargetException sqle){
@@ -54,7 +53,6 @@ public class ObjectSaver extends ObjectMapper{
             int index = 1;
             for (Map.Entry<Method, String> getter : getters.entrySet()) {
                 if (!serial_name.isPresent() || !getter.getValue().equals(setter.get().getValue()[0])) {
-                    System.out.println("name is: " + getter.getValue());
                     setStatement(pstmt, pd, getter.getKey(), obj, index++);
                 }
             }

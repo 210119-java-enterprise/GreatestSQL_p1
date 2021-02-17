@@ -1,7 +1,0 @@
-
-======================================
-16-02-2021 20:00:23
-java.lang.IndexOutOfBoundsException: Index: 0, Size: 0
-	at java.util.LinkedList.checkElementIndex(LinkedList.java:555)
-	at java.util.LinkedList.get(LinkedList.java:476)
-	at TestObjRemover.main(TestObjRemover.java:25)

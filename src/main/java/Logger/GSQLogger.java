@@ -27,10 +27,19 @@ public final class GSQLogger {
         return logger;
     }
 
-    public void writeError(final Exception e) {
+    private void writeToLogger(final String message) {
         System.out.println("Sorry, there was a problem with your request. Please show log file to a developer.");
         log.write("\n======================================\n");
-        log.write(formatter.format(new Date()) + "\n");
+        log.write(formatter.format(message));
+    }
+
+    public void writeError(final String error) {
+       writeToLogger(error);
+       log.flush();
+    }
+
+    public void writeError(final Exception e) {
+        writeToLogger(formatter.format(new Date()) + "\n");
         e.printStackTrace(log);
         log.flush();
     }

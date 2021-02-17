@@ -89,7 +89,7 @@ public class Person {
     public final String toString() {
         return "Model.Person{" +
                 "pk=" + sk +
-                "id=" + id +
+                ", id=" + id +
                 ", first_name='" + first_name + '\'' +
                 ", last_name='" + last_name + '\'' +
                 '}';
