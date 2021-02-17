@@ -71,6 +71,10 @@ public class ObjectGetter extends ObjectMapper{
                     case "float":
                         setter.getKey().invoke(obj, rs.getFloat(setter.getValue()[0]));
                         break;
+                    case "timestamp":
+                    case "timestamptz":
+                        setter.getKey().invoke(obj,rs.getTimestamp(setter.getValue()[0]));
+                        break;
                     default:
                         break;
                 }
