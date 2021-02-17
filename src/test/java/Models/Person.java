@@ -37,7 +37,6 @@ public class Person {
     public final int getsk() {
         return sk;
     }
-
     @Setter(name = "pk")
     public void setPk(final int sk) {
         this.sk = sk;
