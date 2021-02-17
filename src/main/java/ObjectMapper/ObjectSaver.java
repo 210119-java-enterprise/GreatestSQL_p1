@@ -1,10 +1,9 @@
 package ObjectMapper;
 
+import java.lang.reflect.Array;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.sql.Connection;
-import java.sql.ParameterMetaData;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.*;
 import Meta.MetaConstructor;
 import Meta.MetaModel;
@@ -27,25 +26,40 @@ public class ObjectSaver extends ObjectMapper{
                     .toArray(String[]::new));
     }
 
+    private void setSerialID(final Object obj, final Optional<Map.Entry<Method,String[]>> setter,final PreparedStatement pstmt) {
+        try {
+            final ResultSet rs = pstmt.getGeneratedKeys();
+            while (rs.next() && setter.isPresent()) {
+                System.out.println("setting serial id");
+                setter.get().getKey().invoke(obj,rs.getInt(setter.get().getValue()[0]));
+            }
+        } catch(SQLException | IllegalAccessException | InvocationTargetException sqle){
+            sqle.printStackTrace();
+        }
+    }
+
     public boolean saveObject(final Object obj,final Connection conn) {
-        try  {
-            final MetaModel<?> model                          = MetaConstructor.getInstance().getModels().get(obj.getClass().getSimpleName());
-            final HashMap<Method,String> getters              = model.getGetters();
-            final Optional<String> serial_name                = getSerialName(obj);
-            final Optional<Map.Entry<Method,String[]>> setter = getSerialKeyEntry(serial_name,model.getSetters());
-            final String args                                 = getArgs( (serial_name.isPresent())? getters.keySet().size()- 2 : getters.keySet().size()- 1);
-            final String columns                              = getColumns(getters.values(),serial_name);
-            final String sql                                  = "INSERT INTO " + model.getTable_name() + " ( " + columns + " ) VALUES( " + args + " )";
-            final PreparedStatement pstmt                     = conn.prepareStatement(sql);
-            final ParameterMetaData pd                        = pstmt.getParameterMetaData();
-            int index                                         = 1;
-            for(Map.Entry<Method,String> getter : getters.entrySet()) {
-                if(!serial_name.isPresent() || !getter.getValue().equals(serial_name.get())) {
+        try {
+            final MetaModel<?> model                           = MetaConstructor.getInstance().getModels().get(obj.getClass().getSimpleName());
+            final HashMap<Method, String> getters              = model.getGetters();
+            final Optional<String> serial_name                 = getSerialName(obj);
+            final Optional<Map.Entry<Method, String[]>> setter = getSerialKeyEntry(serial_name, model.getSetters());
+            final String args                                  = getArgs((serial_name.isPresent()) ? getters.keySet().size() - 2 : getters.keySet().size() - 1);
+            final String columns                               = getColumns(getters.values(), serial_name);
+            final String sql                                   = "INSERT INTO " + model.getTable_name() + " ( " + columns + " ) VALUES( " + args + " )";
+            final PreparedStatement pstmt                      = conn.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
+            final ParameterMetaData pd                         = pstmt.getParameterMetaData();
+            int index = 1;
+            System.out.println(sql);
+            for (Map.Entry<Method, String> getter : getters.entrySet()) {
+                if (!serial_name.isPresent() || !getter.getValue().equals(setter.get().getValue()[0])) {
                     System.out.println("name is: " + getter.getValue());
                     setStatement(pstmt, pd, getter.getKey(), obj, index++);
                 }
             }
-            pstmt.executeUpdate();
+            if (pstmt.executeUpdate() != 0) {
+                setSerialID(obj,setter,pstmt);
+            }
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
