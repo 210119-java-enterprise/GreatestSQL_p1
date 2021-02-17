@@ -5,6 +5,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.*;
 import java.util.*;
+
+import Logger.GSQLogger;
 import Meta.MetaConstructor;
 import Meta.MetaModel;
 import Connection.ConnectionFactory;
@@ -34,7 +36,7 @@ public class ObjectSaver extends ObjectMapper{
                 setter.get().getKey().invoke(obj,rs.getInt(setter.get().getValue()[0]));
             }
         } catch(SQLException | IllegalAccessException | InvocationTargetException sqle){
-            sqle.printStackTrace();
+            GSQLogger.getInstance().writeError(sqle);
         }
     }
 
@@ -50,7 +52,6 @@ public class ObjectSaver extends ObjectMapper{
             final PreparedStatement pstmt                      = conn.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
             final ParameterMetaData pd                         = pstmt.getParameterMetaData();
             int index = 1;
-            System.out.println(sql);
             for (Map.Entry<Method, String> getter : getters.entrySet()) {
                 if (!serial_name.isPresent() || !getter.getValue().equals(setter.get().getValue()[0])) {
                     System.out.println("name is: " + getter.getValue());
@@ -61,8 +62,8 @@ public class ObjectSaver extends ObjectMapper{
                 setSerialID(obj,setter,pstmt);
             }
             return true;
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException sqle) {
+            GSQLogger.getInstance().writeError(sqle);
         }
         return false;
     }

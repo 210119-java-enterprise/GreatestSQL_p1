@@ -1,6 +1,7 @@
 package ObjectMapper;
 
 import Annotations.PrimaryKey;
+import Logger.GSQLogger;
 import Meta.MetaConstructor;
 import Meta.MetaModel;
 
@@ -8,6 +9,7 @@ import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.ParameterMetaData;
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -47,8 +49,8 @@ public class ObjectRemover extends ObjectMapper{
             setStatement(pstmt, pd, getter, obj, 1);
             pstmt.executeUpdate();
             return true;
-        }catch(Exception e) {
-            e.printStackTrace();
+        }catch(SQLException sqle) {
+            GSQLogger.getInstance().writeError(sqle);
         }
         return false;
     }

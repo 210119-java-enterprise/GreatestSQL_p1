@@ -1,12 +1,15 @@
 package ObjectMapper;
 
 import Annotations.SerialKey;
+import Logger.GSQLogger;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.ParameterMetaData;
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -22,8 +25,8 @@ public abstract class ObjectMapper {
     protected void setStatement(final PreparedStatement pstmt, final ParameterMetaData pd, final Method getter, final Object obj, final int index) {
         try {
             setPreparedStatementByType(pstmt, pd.getParameterTypeName(index),String.valueOf(getter.invoke(obj)), index);
-        }catch(Exception e){
-            e.printStackTrace();
+        }catch(SQLException | IllegalAccessException | InvocationTargetException e){
+            GSQLogger.getInstance().writeError(e);
         }
     }
 
@@ -79,8 +82,8 @@ public abstract class ObjectMapper {
                         break;
                 }
             }
-      }catch(Exception e) {
-            e.printStackTrace();
+      }catch(SQLException sqle) {
+            GSQLogger.getInstance().writeError(sqle);
         }
     }
 

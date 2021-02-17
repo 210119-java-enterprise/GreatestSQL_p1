@@ -1,5 +1,6 @@
 package ObjectMapper;
 
+import Logger.GSQLogger;
 import Meta.MetaConstructor;
 import Meta.MetaModel;
 
@@ -7,6 +8,7 @@ import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.ParameterMetaData;
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,8 +44,8 @@ public class ObjectUpdater extends ObjectMapper{
            setUpdateStatement(obj,pstmt,getters,pd,condition_columns.split(","),update_array.length + 1);
            pstmt.executeUpdate();
            return true;
-       } catch (Exception e) {
-           e.printStackTrace();
+       } catch (SQLException sqle) {
+           GSQLogger.getInstance().writeError(sqle);
        }
        return false;
     }

@@ -1,5 +1,7 @@
 package Connection;
 
+import Logger.GSQLogger;
+
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Connection;
@@ -18,8 +20,8 @@ public class ConnectionFactory {
     static {
         try {
             Class.forName("org.postgresql.Driver");
-        }catch (ClassNotFoundException e) {
-            System.out.println("class error");
+        }catch (ClassNotFoundException cnfe) {
+            GSQLogger.getInstance().writeError(cnfe);
         }
     }
 
@@ -29,8 +31,8 @@ public class ConnectionFactory {
     private ConnectionFactory() {
         try {
             props.load(new FileReader("src/main/resources/application.properties"));
-        }catch(IOException e) {
-            System.out.println("no file error");
+        }catch(IOException ioe) {
+            GSQLogger.getInstance().writeError(ioe);
         }
     }
 
@@ -54,9 +56,8 @@ public class ConnectionFactory {
                     props.getProperty("admin-usr"),
                     props.getProperty("admin-pw")
             );
-        }catch (SQLException e) {
-            System.out.println("connection error");
-
+        }catch (SQLException sqle) {
+            GSQLogger.getInstance().writeError(sqle);
         }
         return conn;
     }
