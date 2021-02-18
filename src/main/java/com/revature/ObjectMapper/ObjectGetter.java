@@ -1,15 +1,13 @@
 package com.revature.ObjectMapper;
 
+import com.revature.GSQLogger.GSQLogger;
 import com.revature.META.MetaConstructor;
 import com.revature.META.MetaModel;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.sql.*;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 
 public class ObjectGetter extends ObjectMapper{
@@ -23,8 +21,7 @@ public class ObjectGetter extends ObjectMapper{
         return objCon;
     }
 
-    private void setPreparedConditions(final PreparedStatement pstmt,final String conditions) {
-        final String[] conditions_split = conditions.split(",");
+    private void setPreparedConditions(final PreparedStatement pstmt,final String[] conditions_split) {
         try {
             ParameterMetaData pd = pstmt.getParameterMetaData();
             int index = 1;
@@ -36,19 +33,33 @@ public class ObjectGetter extends ObjectMapper{
         }
     }
 
-    public List<Object> getListObjectFromDB(final Class<?> clazz,final String columns,final String conditions,final String operators,final Connection conn) {
-        try {
-            final MetaModel<?> model   = MetaConstructor.getInstance().getModels().get(clazz.getSimpleName());
-            final String condition_str = parseColumns(columns,operators);
-            final String sql = "SELECT * FROM "  + model.getTable_name() + " WHERE " + condition_str;
-            final PreparedStatement pstmt = conn.prepareStatement(sql);
-            setPreparedConditions(pstmt,conditions);
-            final ResultSet rs = pstmt.executeQuery();
-            return getListObjFromResult(rs,model.getSetters(),model.getConstructor());
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
+    private Optional<List<Object>> queryDBForListObj(final Class<?> clazz,final String[] columns,final String[] conditions, final String[] operators,final Connection conn) {
+       try {
+           final MetaModel<?> model           = MetaConstructor.getInstance().getModels().get(clazz.getSimpleName());
+           final String condition_str         = parseColumns(columns,operators);
+           final String sql                   = "SELECT * FROM "  + model.getTable_name() + " WHERE " + condition_str;
+           final PreparedStatement pstmt      = conn.prepareStatement(sql);
+           setPreparedConditions(pstmt,conditions);
+           final ResultSet rs = pstmt.executeQuery();
+           final Optional<List<Object>> obj_list = getListObjFromResult(rs,model.getSetters(),model.getConstructor());
+           addListToCache(obj_list);
+           return obj_list;
+       }catch (SQLException sqle) {
+           GSQLogger.getInstance().writeError(sqle);
+       }
+        return Optional.empty();
+    }
+
+    public Optional<List<Object>> getListObjectFromDB(final Class<?> clazz, final String columns, final String conditions, final String operators, final Connection conn) {
+            final MetaModel<?> model           = MetaConstructor.getInstance().getModels().get(clazz.getSimpleName());
+            final String[] column_split        = columns.split(",");
+            final String[] operator_split      = operators.split(",");
+            final String[] condition_split     = conditions.split(",");
+            final Optional<List<Object>> objs  = ObjectCache.getInstance().getObjFromCache(clazz,model.getGetters(),column_split,condition_split,operator_split);
+            if(objs.isPresent()) {
+                return objs;
+            }
+            return queryDBForListObj(clazz,column_split,condition_split,operator_split,conn);
     }
 
     protected void setFieldFromSetter(final Object obj, final Map.Entry<Method,String[]> setter, final ResultSet rs, final String type) {
@@ -83,7 +94,7 @@ public class ObjectGetter extends ObjectMapper{
         }
     }
 
-    private List<Object> getListObjFromResult(final ResultSet rs, final HashMap<Method,String[]> setters, Constructor<?> constructor) {
+    private Optional<List<Object>> getListObjFromResult(final ResultSet rs, final HashMap<Method,String[]> setters, Constructor<?> constructor) {
         try {
             final List<Object> objs = new LinkedList<>();
             while(rs.next()) {
@@ -91,10 +102,10 @@ public class ObjectGetter extends ObjectMapper{
                 setters.entrySet().forEach(e -> setFieldFromSetter(obj,e,rs,e.getValue()[1]));
                 objs.add(obj);
             }
-            return objs;
+            return (objs.size() > 0)? Optional.of(objs) : Optional.empty();
         }catch(Exception e) {
             e.printStackTrace();
         }
-        return null;
+        return Optional.empty();
     }
 }

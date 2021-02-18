@@ -1,0 +1,6 @@
+
+======================================
+21-02-17: 21:47:29
+	java.util.NoSuchElementException: No value present
+	at java.util.Optional.get(Optional.java:135)
+	at TestObjRemover.main(TestObjRemover.java:21)

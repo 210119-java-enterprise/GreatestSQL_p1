@@ -64,15 +64,15 @@ public class MetaConstructor {
         return map;
     }
 
-    private HashMap<Method,String> makeGetterMap(final Method[] methods) {
-        final HashMap<Method,String> map = new HashMap<>();
-        Arrays.stream(methods).forEach(m -> map.put(m,m.getDeclaredAnnotation(Getter.class).name()));
+    private HashMap<String,Method> makeGetterMap(final Method[] methods) {
+        final HashMap<String,Method> map = new HashMap<>();
+        Arrays.stream(methods).forEach(m -> map.put(m.getDeclaredAnnotation(Getter.class).name(),m));
         return map;
     }
 
     public void addModel(final Class<?> clazz) {
         final String class_name                 = getClassName(clazz);
-        final HashMap<Method,String> getters    = makeGetterMap(getGetters(clazz));
+        final HashMap<String,Method> getters    = makeGetterMap(getGetters(clazz));
         final HashMap<Method,String[]> setters  = makeSetterMap(getSetters(clazz));
         final Constructor<?> constructor        = getConstructor(clazz);
         final String table_name                 = getTableName(clazz);

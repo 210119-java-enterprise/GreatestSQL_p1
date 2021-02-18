@@ -1,6 +1,7 @@
 package com.revature.ObjectMapper;
 
 import com.revature.Annotations.SerialKey;
+import com.revature.GSQL.GSQL;
 import com.revature.GSQLogger.GSQLogger;
 
 import java.lang.reflect.InvocationTargetException;
@@ -33,8 +34,8 @@ public abstract class ObjectMapper {
      * @param obj the object to check over.
      * @return Optional which will hold the name of the serial key if it exists.
      */
-    protected Optional<String> getSerialName(final Object obj) {
-       return Arrays.stream(obj.getClass().getDeclaredFields())
+    protected Optional<String> getSerialName(final Class<?> clazz) {
+       return Arrays.stream(clazz.getDeclaredFields())
                     .filter(f -> f.getDeclaredAnnotation(SerialKey.class) != null)
                     .map(f -> f.getDeclaredAnnotation(SerialKey.class).name())
                     .findFirst();
@@ -85,18 +86,20 @@ public abstract class ObjectMapper {
         }
     }
 
-    protected String parseColumns(final String columns, final String operators) {
-        if(operators != null && !"".equals(operators.trim())) {
-            final String[] columns_split = columns.split(",");
-            final String[] operators_split = operators.split(",");
+    protected String parseColumns(final String[] columns, final String[] operators) {
+        if(operators != null && operators.length > 0 && !"".equals(operators[0].trim()) ) {
             final StringBuilder str = new StringBuilder();
-            for (int i = 0; i < operators_split.length; i++) {
-                str.append(columns_split[i]).append(" = ? ").append(operators_split[i]).append(" ");
+            for (int i = 0; i < operators.length; i++) {
+                str.append(columns[i]).append(" = ? ").append(operators[i]).append(" ");
             }
-            str.append(columns_split[columns_split.length - 1]).append(" = ?");
+            str.append(columns[columns.length - 1]).append(" = ?");
             return str.toString();
         }
-        return columns + " = ? ";
+        return columns[0] + " = ? ";
+    }
+
+    protected void addListToCache(final Optional<List<Object>> obj_list) {
+        obj_list.ifPresent(objects -> objects.forEach(ObjectCache.getInstance()::putObjInCache));
     }
 
 }

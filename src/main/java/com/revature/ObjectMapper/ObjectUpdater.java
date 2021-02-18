@@ -23,18 +23,17 @@ public class ObjectUpdater extends ObjectMapper{
         return obj_updater;
    }
 
-   private void setUpdateStatement(final Object obj,final PreparedStatement pstmt,final HashMap<Method,String> getters,final ParameterMetaData pd,final String[] update_array,int index) {
+   private void setUpdateStatement(final Object obj,final PreparedStatement pstmt,final HashMap<String,Method> getters,final ParameterMetaData pd,final String[] update_array,int index) {
         for(String s : update_array) {
-            final Map.Entry<Method,String> getter = getters.entrySet().stream().filter(e -> e.getValue().equals(s)).findFirst().get();
-            setStatement(pstmt,pd,getter.getKey(),obj,index++);
+            setStatement(pstmt,pd,getters.get(s),obj,index++);
         }
    }
 
    public boolean updateObject(final Object obj,final String update_columns, final String condition_columns,final String conditions,final String operators, final Connection conn) {
        try {
            final MetaModel<?> model               = MetaConstructor.getInstance().getModels().get(obj.getClass().getSimpleName());
-           final HashMap<Method, String> getters  = model.getGetters();
-           final String condition_str             = parseColumns(condition_columns, operators);
+           final HashMap<String,Method> getters  = model.getGetters();
+           final String condition_str             = parseColumns(condition_columns.split(","), operators.split(","));
            final String[] update_array            = update_columns.split(",");
            final String new_columns               = String.join(" = ?, ", update_array) + " = ?";
            final String sql                       = "UPDATE " + model.getTable_name() + " SET " + new_columns + " where " + condition_str;

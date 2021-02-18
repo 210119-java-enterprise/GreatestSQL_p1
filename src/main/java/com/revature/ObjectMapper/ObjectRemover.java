@@ -30,11 +30,9 @@ public class ObjectRemover extends ObjectMapper{
         return Arrays.stream(clazz.getDeclaredFields()).map(z -> z.getDeclaredAnnotation(PrimaryKey.class).name()).findFirst().get();
     }
 
-    private static Method getGetter(final String pk,final HashMap<Method,String> getters) {
-        return getters.entrySet().stream()
-                .filter(m -> m.getValue().equals(pk))
-                .map(Map.Entry::getKey)
-                .findFirst().get();
+    private static Method getGetter(final String pk,final HashMap<String,Method> getters) {
+        return getters.get(pk);
+
     }
 
     public boolean removeObjectFromDB(final Object obj, final Connection conn) {
@@ -47,6 +45,7 @@ public class ObjectRemover extends ObjectMapper{
             final ParameterMetaData pd              = pstmt.getParameterMetaData();
             setStatement(pstmt, pd, getter, obj, 1);
             pstmt.executeUpdate();
+            ObjectCache.getInstance().removeObjFromCache(obj);
             return true;
         }catch(SQLException sqle) {
             GSQLogger.getInstance().writeError(sqle);

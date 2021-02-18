@@ -6,6 +6,7 @@ import com.revature.ObjectMapper.*;
 
 import java.sql.Connection;
 import java.util.List;
+import java.util.Optional;
 
 public class GSQL {
     final private static GSQL gsql = new GSQL();
@@ -50,11 +51,11 @@ public class GSQL {
         return obj_saver.saveObject(obj,conn);
     }
 
-    public List<Object> getListObjectFromDB(final Class <?> clazz, final String columns, final String conditions) {
+    public Optional<List<Object>> getListObjectFromDB(final Class <?> clazz, final String columns, final String conditions) {
         return obj_getter.getListObjectFromDB(clazz,columns,conditions,"",conn);
     }
 
-    public List<Object> getListObjectFromDB(final Class <?> clazz, final String columns, final String conditions,final String operators) {
+    public Optional<List<Object>> getListObjectFromDB(final Class <?> clazz, final String columns, final String conditions,final String operators) {
         return obj_getter.getListObjectFromDB(clazz,columns,conditions,operators,conn);
     }
 

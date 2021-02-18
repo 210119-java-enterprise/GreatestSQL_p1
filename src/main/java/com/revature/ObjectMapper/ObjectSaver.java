@@ -43,23 +43,24 @@ public class ObjectSaver extends ObjectMapper{
     public boolean saveObject(final Object obj,final Connection conn) {
         try {
             final MetaModel<?> model                           = MetaConstructor.getInstance().getModels().get(obj.getClass().getSimpleName());
-            final HashMap<Method, String> getters              = model.getGetters();
-            final Optional<String> serial_name                 = getSerialName(obj);
+            final HashMap<String,Method> getters               = model.getGetters();
+            final Optional<String> serial_name                 = getSerialName(obj.getClass());
             final Optional<Map.Entry<Method, String[]>> setter = getSerialKeyEntry(serial_name, model.getSetters());
             final String args                                  = getArgs((serial_name.isPresent()) ? getters.keySet().size() - 2 : getters.keySet().size() - 1);
-            final String columns                               = getColumns(getters.values(), serial_name);
+            final String columns                               = getColumns(getters.keySet(), serial_name);
             final String sql                                   = "INSERT INTO " + model.getTable_name() + " ( " + columns + " ) VALUES( " + args + " )";
             final PreparedStatement pstmt                      = conn.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
             final ParameterMetaData pd                         = pstmt.getParameterMetaData();
             int index = 1;
-            for (Map.Entry<Method, String> getter : getters.entrySet()) {
-                if (!serial_name.isPresent() || !getter.getValue().equals(setter.get().getValue()[0])) {
-                    setStatement(pstmt, pd, getter.getKey(), obj, index++);
+            for (Map.Entry<String,Method> getter : getters.entrySet()) {
+                if (!serial_name.isPresent() || !getter.getKey().equals(setter.get().getValue()[0])) {
+                    setStatement(pstmt, pd, getter.getValue(), obj, index++);
                 }
             }
             if (pstmt.executeUpdate() != 0) {
                 setSerialID(obj,setter,pstmt);
             }
+            ObjectCache.getInstance().putObjInCache(obj);
             return true;
         } catch (SQLException sqle) {
             GSQLogger.getInstance().writeError(sqle);

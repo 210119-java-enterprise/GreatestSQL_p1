@@ -20,7 +20,7 @@ public class GSQLogger {
      */
     private GSQLogger() {
         try {
-            log = new PrintWriter(new BufferedWriter(new FileWriter("src/main/resources/log.txt",false)));
+            log = new PrintWriter(new BufferedWriter(new FileWriter("src/main/resources/GSQLog.txt",false)));
             format = DateTimeFormatter.ofPattern("yy-MM-dd: HH:mm:ss");
 
         }catch(IOException ioe) {
