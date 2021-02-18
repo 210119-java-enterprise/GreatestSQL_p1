@@ -57,7 +57,7 @@ public class ConnectionFactory {
     }
 
     /**
-     * Method to create a connection to application database.
+     * Method to retrieve a connection to application database.
      * @return Connection object.
      */
     public Connection getConnection () {

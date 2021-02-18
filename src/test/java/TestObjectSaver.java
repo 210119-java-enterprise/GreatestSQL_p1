@@ -14,6 +14,4 @@ public class TestObjectSaver {
         GSQL.getInstance().addObjectToDB(r);
         System.out.println(ObjectCache.getInstance().getCache().toString());
     }
-
-
 }

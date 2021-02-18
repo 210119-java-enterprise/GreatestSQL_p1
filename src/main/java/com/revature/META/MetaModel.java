@@ -5,6 +5,10 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Objects;
 
+/**
+ * Class which represent a metamodel for an annotated class.
+ * @param <T> Class type.
+ */
 public class MetaModel<T> {
     private final Class<T> clazz;
     private final HashMap<String,Method> getters;
@@ -16,18 +20,34 @@ public class MetaModel<T> {
         return clazz;
     }
 
+    /**
+     * returns HashMap of annotated getters.
+     * @return HashMapc key = column name, value = getter method.
+     */
     public HashMap<String,Method> getGetters() {
         return getters;
     }
 
+    /**
+     * return hashMap of annotated setters.
+     * @return HashMap key = setter method, value = string[] {column name, parameter type};
+     */
     public HashMap<Method, String[]> getSetters() {
         return setters;
     }
 
+    /**
+     *
+     * @return no args constructor for class.
+     */
     public Constructor<?> getConstructor() {
         return constructor;
     }
 
+    /**
+     *
+     * @return name of table the class represents in database.
+     */
     public String getTable_name() {
         return table_name;
     }
