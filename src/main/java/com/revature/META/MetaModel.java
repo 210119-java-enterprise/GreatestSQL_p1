@@ -15,6 +15,7 @@ public class MetaModel<T> {
     private final HashMap<Method,String[]> setters;
     private final Constructor<?> constructor;
     private final String table_name;
+    private final String primary_key_name;
 
     public Class<T> getClazz() {
         return clazz;
@@ -52,12 +53,13 @@ public class MetaModel<T> {
         return table_name;
     }
 
-    public MetaModel(Class<T> clazz,HashMap<String,Method> getters,HashMap<Method,String[]> setters, Constructor<?> constructor, String table_name) {
-        this.clazz = clazz;
-        this.getters = getters;
-        this.setters = setters;
-        this.constructor = constructor;
-        this.table_name = table_name;
+    public MetaModel(Class<T> clazz,HashMap<String,Method> getters,HashMap<Method,String[]> setters, Constructor<?> constructor, String table_name,String primary_key_name) {
+        this.clazz            = clazz;
+        this.getters          = getters;
+        this.setters          = setters;
+        this.constructor      = constructor;
+        this.table_name       = table_name;
+        this.primary_key_name = primary_key_name;
     }
 
     @Override
@@ -84,5 +86,9 @@ public class MetaModel<T> {
                 ", constructor=" + constructor +
                 ", table_name='" + table_name + '\'' +
                 '}';
+    }
+
+    public String getPrimaryKeyName() {
+        return primary_key_name;
     }
 }

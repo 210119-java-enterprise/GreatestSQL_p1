@@ -59,13 +59,10 @@ public class GSQL {
      * Updates an Object which already exists in a database.
      * @param obj Object ot be updated.
      * @param update_columns Comma separated string of columns to update.
-     * @param condition_columns Comma separated string of columns to use to identify object in database.
-     * @param conditions Comma separated string of values which match the condition_columns.
-     * @param operators Comma separated string operations such as AND/OR to be applied ot the conditions.
      * @return boolean to indicate the whether operation succeeded.
      */
-    public boolean UpdateObjectInDB(final Object obj,final String update_columns, final String condition_columns,final String conditions,final String operators) {
-        return obj_updater.updateObject(obj,update_columns,condition_columns,conditions,operators,conn);
+    public boolean UpdateObjectInDB(final Object obj,final String update_columns) {
+        return obj_updater.updateObject(obj,update_columns,conn);
     }
 
     /**

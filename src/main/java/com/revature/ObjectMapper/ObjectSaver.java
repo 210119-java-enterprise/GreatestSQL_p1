@@ -3,7 +3,6 @@ package com.revature.ObjectMapper;
 import com.revature.GSQLogger.GSQLogger;
 import com.revature.META.MetaConstructor;
 import com.revature.META.MetaModel;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.*;
@@ -12,6 +11,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * Class which handles saving objects to the database.
+ */
 public class ObjectSaver extends ObjectMapper{
     public static final ObjectSaver objSaver = new ObjectSaver();
 
@@ -23,12 +25,24 @@ public class ObjectSaver extends ObjectMapper{
         return objSaver;
     }
 
+    /**
+     * Get comma separated list of non serial columns which are associated with a getter inside of the class.
+     * @param getters Collection of annotated getters in a class.
+     * @param serial_name Name of serial value stored in database.
+     * @return comma separated string of column names.
+     */
     private String getColumns(final Collection<String> getters, final Optional<String> serial_name) {
         return String.join(",",getters.stream()
                     .filter(s -> (!serial_name.isPresent() || !s.equals(serial_name.get())))
                     .toArray(String[]::new));
     }
 
+    /**
+     * sets the value for a serial id in object.
+     * @param obj object for which the serial id needs to be set.
+     * @param setter setter inside of class which sets the serial id.
+     * @param pstmt prepared statement to get generated keys from.
+     */
     private void setSerialID(final Object obj, final Optional<Map.Entry<Method,String[]>> setter,final PreparedStatement pstmt) {
         try {
             final ResultSet rs = pstmt.getGeneratedKeys();
@@ -40,6 +54,12 @@ public class ObjectSaver extends ObjectMapper{
         }
     }
 
+    /**
+     * Saves an object to the database.
+     * @param obj Object to save to database.
+     * @param conn connection to the database.
+     * @return boolean indicating success/failure of operation.
+     */
     public boolean saveObject(final Object obj,final Connection conn) {
         try {
             final MetaModel<?> model                           = MetaConstructor.getInstance().getModels().get(obj.getClass().getSimpleName());
@@ -60,6 +80,7 @@ public class ObjectSaver extends ObjectMapper{
             if (pstmt.executeUpdate() != 0) {
                 setSerialID(obj,setter,pstmt);
             }
+            //also place object inside of cache.
             ObjectCache.getInstance().putObjInCache(obj);
             return true;
         } catch (SQLException sqle) {

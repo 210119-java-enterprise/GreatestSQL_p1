@@ -7,6 +7,6 @@ public class TestLogger {
         final GSQL g = GSQL.getInstance();
         GSQLogger.getInstance().writeError("this is a message");
         final Person p = new Person(100,"billy","bob");
-        g.UpdateObjectInDB(p,"firstname,lastname","id,firstname",String.valueOf(p.getId()) + "," + String.valueOf(p.getFirstName()),"AND");
+        g.UpdateObjectInDB(p,"firstname,lastname");
     }
 }

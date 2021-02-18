@@ -6,7 +6,6 @@ import java.util.Objects;
 @Table(name = "Users")
 public class Person {
     @Column(name = "id")
-    @PrimaryKey(name = "id")
     private int id;
 
     @Column(name = "firstname")
@@ -16,6 +15,7 @@ public class Person {
     private String last_name;
 
     @SerialKey(name = "pk")
+    @PrimaryKey(name = "pk")
     private int sk;
 
     public Person() {
@@ -77,7 +77,7 @@ public class Person {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Person person = (Person) o;
-        return id == person.id && first_name.equals(person.first_name) && last_name.equals(person.last_name);
+        return id == person.id && sk == person.sk && first_name.equals(person.first_name) && last_name.equals(person.last_name);
     }
 
     @Override

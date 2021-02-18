@@ -1,10 +1,12 @@
 package com.revature.META;
 
 import com.revature.Annotations.Getter;
+import com.revature.Annotations.PrimaryKey;
 import com.revature.Annotations.Setter;
 import com.revature.Annotations.Table;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -113,6 +115,13 @@ public class MetaConstructor {
         return map;
     }
 
+    private String getPrimaryKeyName(final Class<?> clazz) {
+        return Arrays.stream(clazz.getDeclaredFields())
+                        .filter(f -> f.getDeclaredAnnotation(PrimaryKey.class) != null)
+                        .map(f -> f.getDeclaredAnnotation(PrimaryKey.class).name())
+                        .findFirst().get();
+    }
+
     /**
      * Add a metamodel to the models HashMap.
      * @param clazz class to add to map.
@@ -123,6 +132,7 @@ public class MetaConstructor {
         final HashMap<Method,String[]> setters  = makeSetterMap(getSetters(clazz));
         final Constructor<?> constructor        = getConstructor(clazz);
         final String table_name                 = getTableName(clazz);
-        models.put(class_name,new MetaModel<>(clazz,getters,setters,constructor,table_name));
+        final String pk                         = getPrimaryKeyName(clazz);
+        models.put(class_name,new MetaModel<>(clazz,getters,setters,constructor,table_name,pk));
     }
 }

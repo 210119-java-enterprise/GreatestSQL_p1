@@ -38,9 +38,7 @@ public class ObjectCache {
     public void putObjInCache(final Object obj) {
         if(!cache.containsKey(obj.getClass())) {
             cache.put(obj.getClass(),new HashSet<>());
-            System.out.println("new hashset");
         }
-        System.out.println("adding to cache");
         cache.get(obj.getClass()).add(obj);
     }
 
@@ -54,7 +52,7 @@ public class ObjectCache {
      */
     private boolean compareColumnToConditional(final Object obj,final HashMap<String,Method> getters,final String column,final String value) {
         try {
-            return getters.get(column).invoke(obj).equals(value);
+            return getters.get(column).invoke(obj).toString().equals(value);
         }catch(InvocationTargetException | IllegalAccessException e) {
             GSQLogger.getInstance().writeError(e);
         }
@@ -68,11 +66,14 @@ public class ObjectCache {
      * @return boolean indicating whether the list matches the operators.
      */
     private boolean compareValuesOfOperators(final Queue<Boolean> values,final String[] operators) {
-        boolean value = true;
-        for(String o: operators) {
-            value = (o.equals("AND"))? values.remove() && values.remove(): values.remove() || values.remove();
+        if (values.size() > 1) {
+            boolean value = false;
+            for (String o : operators) {
+                value = (o.equals("AND")) ? values.remove() && values.remove() : values.remove() || values.remove();
+            }
+            return value;
         }
-        return value;
+        return values.remove();
     }
 
     /**
@@ -110,10 +111,8 @@ public class ObjectCache {
         try {
             final List<Object> list = new LinkedList<>();
             for(Object o: cache.get(clazz)){
-                System.out.println("comparing");
                 if(compareObjects(o,getters,columns,conditions,operators)) {
                     list.add(o);
-                    System.out.println("true");
                 }
             }
             return (list.size() > 0)? Optional.of(list) : Optional.empty();

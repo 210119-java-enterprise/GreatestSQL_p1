@@ -1,6 +1,10 @@
 
 ======================================
-21-02-17: 21:47:29
-	java.util.NoSuchElementException: No value present
-	at java.util.Optional.get(Optional.java:135)
-	at TestObjRemover.main(TestObjRemover.java:21)
+21-02-18: 16:19:56
+	org.postgresql.util.PSQLException: Can't use query methods that take a query string on a PreparedStatement.
+	at org.postgresql.jdbc.PgPreparedStatement.executeUpdate(PgPreparedStatement.java:119)
+	at org.apache.commons.dbcp2.DelegatingStatement.executeUpdate(DelegatingStatement.java:234)
+	at org.apache.commons.dbcp2.DelegatingStatement.executeUpdate(DelegatingStatement.java:234)
+	at com.revature.ObjectMapper.ObjectUpdater.updateObject(ObjectUpdater.java:64)
+	at com.revature.GSQL.GSQL.UpdateObjectInDB(GSQL.java:65)
+	at TestObjectUpdater.main(TestObjectUpdater.java:25)
