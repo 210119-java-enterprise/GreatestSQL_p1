@@ -6,6 +6,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 
+/**
+ * class which hands caching objects stored in database tables.
+ * Singleton so no more than one instance can exists at a given time.
+ */
 public class ObjectCache {
     private final static ObjectCache obj_cache = new ObjectCache();
     private final HashMap<Class<?>, HashSet<Object>> cache;
@@ -19,10 +23,18 @@ public class ObjectCache {
         return obj_cache;
     }
 
+    /**
+     *
+     * @return HashMap cache of objects. key = class, value = HashSet of all objects of that class.
+     */
     public HashMap<Class<?>,HashSet<Object>> getCache() {
         return cache;
     }
 
+    /**
+     * Places an object into the cache.
+     * @param obj object to place inside of cache.
+     */
     public void putObjInCache(final Object obj) {
         if(!cache.containsKey(obj.getClass())) {
             cache.put(obj.getClass(),new HashSet<>());
@@ -32,18 +44,30 @@ public class ObjectCache {
         cache.get(obj.getClass()).add(obj);
     }
 
-    private boolean compareColumnToConditional(final Object obj,final HashMap<String,Method> getters,final String column,final String condition) {
+    /**
+     * Compares value in value string to that returned by the getter in that object.
+     * @param obj object comparing.
+     * @param getters HashMap of annotated getters in that object.
+     * @param column  String of column name.
+     * @param value String of value which the getter should return.
+     * @return
+     */
+    private boolean compareColumnToConditional(final Object obj,final HashMap<String,Method> getters,final String column,final String value) {
         try {
-            System.out.println("column is: " + column);
-            System.out.println("condition is: " + condition);
-            System.out.println("value is: " + getters.get(column).invoke(obj));
-            return getters.get(column).invoke(obj).equals(condition);
+            return getters.get(column).invoke(obj).equals(value);
         }catch(InvocationTargetException | IllegalAccessException e) {
             GSQLogger.getInstance().writeError(e);
         }
         return false;
     }
-    private boolean compareValuesoFOperators(final Queue<Boolean> values,final String[] operators) {
+
+    /**
+     * Goes through the list of values and compares them using the supplied operators.
+     * @param values list of boolean values.
+     * @param operators string[] of operators (AND/OR) to apply to the values.
+     * @return boolean indicating whether the list matches the operators.
+     */
+    private boolean compareValuesOfOperators(final Queue<Boolean> values,final String[] operators) {
         boolean value = true;
         for(String o: operators) {
             value = (o.equals("AND"))? values.remove() && values.remove(): values.remove() || values.remove();
@@ -51,14 +75,34 @@ public class ObjectCache {
         return value;
     }
 
+    /**
+     * Compare object inside of cache with the conditions provided to determine if that object already exists in cache.
+     * @param obj Object from cache to check if it matches given conditions.
+     * @param getters HashMap of getters inside of object.
+     * @param columns String[] of columns to check for comparision.
+     * @param conditions String[] values which the checked columns should match.
+     * @param operators String[] operators to apply to the columns.
+     * @return boolean to indicate a match or not.
+     */
     private boolean compareObjects(final Object obj,final HashMap<String,Method> getters,final String[] columns,final String[] conditions,final String[] operators) {
         final Queue<Boolean> values = new LinkedList<>();
         for(int i = 0; i < columns.length; i++) {
             values.add(compareColumnToConditional(obj,getters,columns[i],conditions[i]));
         }
-        return compareValuesoFOperators(values,operators);
+        return compareValuesOfOperators(values,operators);
     }
 
+    /**
+     * Method checks if object or objects matching criteria already exists in database.
+     * If match is found, it is added to a list. that list is then returned inside of an optional.
+     * If no match is found then an empty optional is returned.
+     * @param clazz class of object to check for.
+     * @param getters HashMap of annotated getters inside of class.
+     * @param columns String[] of columns to check for.
+     * @param conditions String[] of values that the columns should match
+     * @param operators String[] of operators(AND/OR) to apply to columns.
+     * @return Optional containing List of objects which match the conditions provided.
+     */
     public Optional<List<Object>> getObjFromCache(final Class<?> clazz,final HashMap<String,Method> getters,final String[] columns,final String[] conditions,final String[] operators) {
         if(!cache.containsKey(clazz)) {
             return Optional.empty();
@@ -79,6 +123,10 @@ public class ObjectCache {
         return Optional.empty();
     }
 
+    /**
+     * Remove an object from cache.
+     * @param obj object to remove from cache.
+     */
     public void removeObjFromCache(final Object obj) {
         if(cache.containsKey(obj.getClass())) {
             cache.get(obj.getClass()).remove(obj);
