@@ -1,15 +1,17 @@
 package com.revature.ObjectMapper;
 
-import com.revature.GSQLogger.GSQLogger;
-import com.revature.META.MetaConstructor;
-import com.revature.META.MetaModel;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.sql.*;
 import java.util.*;
 import java.util.regex.Matcher;
+import com.revature.GSQLogger.GSQLogger;
+import com.revature.META.MetaConstructor;
+import com.revature.META.MetaModel;
 
+/**
+ * Class which handles retrieving an object from the database.
+ */
 public class ObjectGetter extends ObjectMapper{
     public static final ObjectGetter objCon = new ObjectGetter();
 
@@ -21,6 +23,11 @@ public class ObjectGetter extends ObjectMapper{
         return objCon;
     }
 
+    /**
+     * Sets the prepared statement using the conditons array.
+     * @param pstmt the prepared statment to be set.
+     * @param conditions_split string[] of conditions to set inside of the prepared statment.
+     */
     private void setPreparedConditions(final PreparedStatement pstmt,final String[] conditions_split) {
         try {
             ParameterMetaData pd = pstmt.getParameterMetaData();
@@ -33,6 +40,15 @@ public class ObjectGetter extends ObjectMapper{
         }
     }
 
+    /**
+     * Query the database for a list of objects matching the given criteria.
+     * @param clazz class of object.
+     * @param columns comma separated string of columns to match against in database.
+     * @param conditions comma separated string of list of conditions which columns must match.
+     * @param operators comma separated string of operators(AND/OR) to apply to columns.
+     * @param conn Connection to database.
+     * @return Optional containing a list of all objects matching the search or an empty optional if no matches found.
+     */
     private Optional<List<Object>> queryDBForListObj(final Class<?> clazz,final String[] columns,final String[] conditions, final String[] operators,final Connection conn) {
        try {
            final MetaModel<?> model           = MetaConstructor.getInstance().getModels().get(clazz.getSimpleName());
@@ -50,6 +66,16 @@ public class ObjectGetter extends ObjectMapper{
         return Optional.empty();
     }
 
+    /**
+     * Query for a list of objects.  First it searches for objects inside of the cache.
+     * if no matches found in cache then query the database for a list of objects matching the given criteria.
+     * @param clazz class of object.
+     * @param columns comma separated string of columns to match against in database.
+     * @param conditions comma separated string of list of conditions which columns must match.
+     * @param operators comma separated string of operators(AND/OR) to apply to columns.
+     * @param conn Connection to database.
+     * @return Optional containing a list of all objects matching the search or an empty optional if no matches found.
+     */
     public Optional<List<Object>> getListObjectFromDB(final Class<?> clazz, final String columns, final String conditions, final String operators, final Connection conn) {
             final MetaModel<?> model           = MetaConstructor.getInstance().getModels().get(clazz.getSimpleName());
             final String[] column_split        = columns.split(",");
@@ -62,6 +88,13 @@ public class ObjectGetter extends ObjectMapper{
             return queryDBForListObj(clazz,column_split,condition_split,operator_split,conn);
     }
 
+    /**
+     * Set fields in object using values from the ResultSet of a query.
+     * @param obj object containing annotated setters. THis is the object which will have its values set.
+     * @param setter HashMap of setters in object.
+     * @param rs ResultSet of database query
+     * @param type The type of the paramater to be set.
+     */
     protected void setFieldFromSetter(final Object obj, final Map.Entry<Method,String[]> setter, final ResultSet rs, final String type) {
         try {
             final Matcher match = pat.matcher(type);
@@ -94,6 +127,13 @@ public class ObjectGetter extends ObjectMapper{
         }
     }
 
+    /**
+     * Get a list of objects from a ResultSet.
+     * @param rs ResultSet of database query.
+     * @param setters HashMap of setters for the Class.
+     * @param constructor no Args constructor for the object.
+     * @return Optional containing list of all objects created from the ResulSet
+     */
     private Optional<List<Object>> getListObjFromResult(final ResultSet rs, final HashMap<Method,String[]> setters, Constructor<?> constructor) {
         try {
             final List<Object> objs = new LinkedList<>();
