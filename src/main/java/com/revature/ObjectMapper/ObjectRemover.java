@@ -28,15 +28,6 @@ public class ObjectRemover extends ObjectMapper{
     }
 
     /**
-     * Gets string name of primary key.
-     * @param clazz class to find primary key in.
-     * @return String name of primary key.
-     */
-    private static String getPK(final Class<?> clazz) {
-        return Arrays.stream(clazz.getDeclaredFields()).map(z -> z.getDeclaredAnnotation(PrimaryKey.class).name()).findFirst().get();
-    }
-
-    /**
      * Return the getter method for the primary key.
      * @param pk name of primary key in a particular.
      * @param getters HashMap of getters in a particular class.
@@ -56,7 +47,7 @@ public class ObjectRemover extends ObjectMapper{
     public boolean removeObjectFromDB(final Object obj, final Connection conn) {
         try {
             final MetaModel<?> model                = MetaConstructor.getInstance().getModels().get(obj.getClass().getSimpleName());
-            final String primary_key                = getPK(obj.getClass());
+            final String primary_key                = model.getPrimaryKeyName();
             final Method getter                     = getGetter(primary_key,model.getGetters());
             final String sql                        = "DELETE from " + model.getTable_name() + " WHERE "+ primary_key + " = ? ";
             final PreparedStatement pstmt           = conn.prepareStatement(sql);

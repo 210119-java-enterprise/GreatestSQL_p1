@@ -18,6 +18,7 @@ public class TestTransactions {
         }
         GSQL.getInstance().Rollback("sp1");
         System.out.println("rollback");
+        GSQL.getInstance().removeObjectFromDB(p.get(0));
         LinkedList<Object> g = (LinkedList<Object>) GSQL.getInstance().getListObjectFromDB(Person.class, "firstname", "chris").get();
         for (Object pers : g) {
             System.out.println(pers.toString());

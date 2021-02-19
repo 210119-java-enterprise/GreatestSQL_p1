@@ -2,6 +2,8 @@ import com.revature.GSQL.GSQL;
 import Models.Person;
 
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
 
 public class TestObjGetter {
     public static void main(String[] args) {
@@ -12,14 +14,19 @@ public class TestObjGetter {
             System.out.println(pers.toString());
         }
         System.out.println("second test");
-        LinkedList<Object> g = (LinkedList<Object>) GSQL.getInstance().getListObjectFromDB(Person.class,"id,firstname,lastname","4,chris,nope","AND,AND").get();
-        for(Object gers: g) {
-            System.out.println(gers.toString());
+        Optional<List<Object>> g =  GSQL.getInstance().getListObjectFromDB(Person.class,"id,firstname,lastname","4,chris,nope","AND,AND");
+        System.out.println(g.isPresent());
+        if(g.isPresent()) {
+            for (Object gers : g.get()) {
+                System.out.println(gers.toString());
+            }
         }
         System.out.println("third test");
-        LinkedList<Object> y = (LinkedList<Object>) GSQL.getInstance().getListObjectFromDB(Person.class,"firstname,lastname","no,name","AND").get();
-        for(Object gers: y) {
-            System.out.println(gers.toString());
+        Optional<List<Object>> y = GSQL.getInstance().getListObjectFromDB(Person.class,"firstname,lastname","no,name","AND");
+        if(y.isPresent()) {
+            for (Object gers : y.get()) {
+                System.out.println(gers.toString());
+            }
         }
     }
 

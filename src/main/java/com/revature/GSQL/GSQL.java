@@ -56,7 +56,7 @@ public class GSQL {
     }
 
     /**
-     * Updates an Object which already exists in a database.
+     * Updates an Object which already exists in a database. If auto commit is not enabled then user must call 'beginCommit' to save updates to data base.
      * @param obj Object ot be updated.
      * @param update_columns Comma separated string of columns to update.
      * @return boolean to indicate the whether operation succeeded.
