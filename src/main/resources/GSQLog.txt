@@ -5,6 +5,6 @@
 	at org.postgresql.jdbc.PgPreparedStatement.executeUpdate(PgPreparedStatement.java:119)
 	at org.apache.commons.dbcp2.DelegatingStatement.executeUpdate(DelegatingStatement.java:234)
 	at org.apache.commons.dbcp2.DelegatingStatement.executeUpdate(DelegatingStatement.java:234)
-	at com.revature.ObjectMapper.ObjectUpdater.updateObject(ObjectUpdater.java:64)
-	at com.revature.GSQL.GSQL.UpdateObjectInDB(GSQL.java:65)
+	at ObjectUpdater.updateObject(ObjectUpdater.java:64)
+	at GSQL.UpdateObjectInDB(GSQL.java:65)
 	at TestObjectUpdater.main(TestObjectUpdater.java:25)

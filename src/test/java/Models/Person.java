@@ -1,6 +1,6 @@
 package Models;
 
-import com.revature.Annotations.*;
+import com.revature.GSQL.Annotations.*;
 
 import java.util.Objects;
 @Table(name = "Users")
