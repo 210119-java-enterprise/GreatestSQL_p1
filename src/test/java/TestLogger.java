@@ -1,5 +1,5 @@
-import com.revature.GSQL.GSQL.GSQL;
-import com.revature.GSQL.GSQLogger.GSQLogger;
+import com.revature.GSQL.GSQL;
+import com.revature.GSQLogger.GSQLogger;
 import Models.Person;
 
 public class TestLogger {

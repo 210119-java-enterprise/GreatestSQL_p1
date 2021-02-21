@@ -1,6 +1,6 @@
-import com.revature.GSQL.GSQL.GSQL;
+import com.revature.GSQL.GSQL;
 import Models.Person;
-import com.revature.GSQL.ObjectMapper.ObjectCache;
+import com.revature.ObjectMapper.ObjectCache;
 
 public class TestObjectSaver {
     public static void main(String[] args) {

@@ -1,5 +1,5 @@
 import Models.Person;
-import com.revature.GSQL.GSQL.GSQL;
+import com.revature.GSQL.GSQL;
 import org.junit.Test;
 
 import java.util.List;
