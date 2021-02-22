@@ -1,4 +1,4 @@
-import com.revature.GSQL.GSQL;
+import com.revature.GSQL.GSQL.GSQL;
 import Models.Person;
 
 import java.util.LinkedList;
