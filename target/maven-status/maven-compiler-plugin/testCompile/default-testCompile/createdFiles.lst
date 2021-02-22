@@ -1,9 +1,0 @@
-TestObjectSaver.class
-TestObjectUpdater.class
-TestLogger.class
-Models/Person.class
-TestTransactions.class
-TestObjRemover.class
-TestCache.class
-TestObjGetter.class
-TestGettingObj.class
