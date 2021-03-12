@@ -80,7 +80,7 @@ Finally, inside your project structure you need a application.proprties file.
   - #### public boolean UpdateObjectInDB(final Object obj,final String update_columns)  
       - Updates the given object in the databse. Update columns is a comma seperated lsit fo all columns in the onject which need to be updated
   - #### public boolean removeObjectFromDB(final Object obj)  
-      - Removes teh given object from the database.  
+      - Removes the given object from the database.  
   - #### public boolean addObjectToDB(final Object obj)  
       - Adds the given object to the database.  
   - #### public Optional<List<Object>> getListObjectFromDB(final Class <?> clazz, final String columns, final String conditions)  
