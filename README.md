@@ -14,7 +14,7 @@ A java based ORM for simplifying connecting to and from an SQL database without 
 List of features ready and TODOs for future development  
 * Easy to use and straightforward user API.  
 * No need for SQL, HQL, or any databse specific language.  
-* Straightforward and simply Annotation based for ease of use. 
+* Straightforward and simple Annotation based for ease of use. 
 
 To-do list:  
 * Mapping of join columns inside of entities.    
@@ -43,16 +43,9 @@ Finally, inside your project structure you need a application.proprties file.
  ``` 
   url=path/to/database
   admin-usr=username/of/database
-  admin-pw=password/of/database
-
- ```
-
-> Be sure to include BOTH Windows and Unix command  
-> Be sure to mention if the commands only work on a specific platform (eg. AWS, GCP)
-
-- All the `code` required to get started
-- Images of what it should look like
-
+  admin-pw=password/of/database  
+  ```
+  
 ## Usage  
   ### Annotating classes  
   All classes which represent objects in database must be annotated.
